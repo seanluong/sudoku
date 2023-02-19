@@ -1,18 +1,9 @@
-import { Box, Paper, Typography } from "@mui/material";
+import { Paper } from "@mui/material";
 import Grid from "@mui/material/Grid"
-
-
-export interface Row {
-    cells: number[];
-}
-
-export interface CellMap {
-    [key: string]: number;
-}
+import { Cell } from "./Cell";
+import { CellMap } from "./types";
 
 export interface Board {
-    rows: number[];
-    columns: number[];
     cells: CellMap;
 }
 
@@ -20,52 +11,12 @@ export interface SudokuProps {
     board: Board;
 }
 
-interface CellProps {
-    rowIndex: number;
-    columnIndex: number;
-    value: number;
-    size: string;
-    borderColor: string;
-}
-
-const Cell = ({ rowIndex, columnIndex, value, size, borderColor }: CellProps) => {
-    const cellBorderTop = (rowIndex: number, style: string) => ([3, 6].includes(rowIndex) ? style : "inherit");
-    const cellBorderBottom = (rowIndex: number, style: string) => ([2, 5].includes(rowIndex) ? style : "inherit");
-    const cellBorderLeft = (columnIndex: number, style: string) => ([3, 6].includes(columnIndex) ? style : "inherit");
-    const cellBorderRight = (columnIndex: number, style: string) => ([2, 5].includes(columnIndex) ? style : "inherit");
-    const cellBackgroundColor = (cell: number) => cell ? "lightblue" : "white";
-
-    return (
-        <Paper key={`cell-${rowIndex}-${columnIndex}`}
-            elevation={0}
-            sx={{
-                flex: `1 1 ${size}`,
-                width: size,
-                padding: "0.05em",
-                bgcolor: "rgba(0, 0, 0, 0.2)",
-            }}>
-            <Box sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                width: "100%",
-                height: "100%",
-                backgroundColor: cellBackgroundColor(value),
-                borderTop: cellBorderTop(rowIndex, borderColor),
-                borderBottom: cellBorderBottom(rowIndex, borderColor),
-                borderLeft: cellBorderLeft(columnIndex, borderColor),
-                borderRight: cellBorderRight(columnIndex, borderColor),
-            }}>
-                <Typography variant="h6">
-                    {value ? value : null}
-                </Typography>
-            </Box>
-        </Paper>
-    )
-}
-
 export const Sudoku = ({ board }: SudokuProps) => {
-    const { rows, columns, cells} = board;
+    const { cells } = board;
+
+    const rows = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+    const columns = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+
     const containerSize = "min(75vw, 75vh)";
     const gridSize = `calc(${containerSize} * 0.98)`;
     const outerBackgroundColor = "rgba(0, 0, 100, 0.8)";
@@ -88,11 +39,11 @@ export const Sudoku = ({ board }: SudokuProps) => {
                     width: gridSize,
                 }}>
                 {
-                    rows.map((row, rowIndex) => {
+                    rows.map((row) => {
                         return (
                             <Grid item
                                 container
-                                key={`row-${rowIndex}`}
+                                key={`row-${row}`}
                                 justifyContent="center"
                                 direction="row"
                                 sx={{
@@ -101,11 +52,12 @@ export const Sudoku = ({ board }: SudokuProps) => {
                                 }}
                             >
                                 {
-                                    columns.map((column, columnIndex) => {
+                                    columns.map((column) => {
                                         const cell = cells[`${row}:${column}`];
                                         return (
-                                            <Cell rowIndex={rowIndex}
-                                                columnIndex={columnIndex}
+                                            <Cell key={`column-${column}`}
+                                                rowIndex={row}
+                                                columnIndex={column}
                                                 value={cell}
                                                 size={cellSize}
                                                 borderColor={cellBorderColor} />

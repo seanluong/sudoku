@@ -1,18 +1,15 @@
 import { Stack } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Controls } from './Controls';
-import { Board, CellMap, Row, Sudoku } from './Sudoku';
+import { Board,  Sudoku } from './Sudoku';
+import { CellMap } from './types';
 
 const generateBoard = (rowCount: number, columnCount: number): Board => {
     const board: Board = {
-        rows: [] as number[],
-        columns: [] as number[],
         cells: {} as CellMap,
     };
 
     for (let r=0;r<rowCount;r++) {
-        board.rows.push(r);
-        board.columns.push(r);
         for (let c=0;c<columnCount;c++) {
             const key = `${r}:${c}`;
             board.cells[key] = 0;
@@ -50,7 +47,7 @@ export const Main = () => {
             width: "100vw",
             paddingTop: "1rem",
         }} spacing={3}>
-            <Sudoku board={board}/>
+            <Sudoku board={board} />
             <Controls />
         </Stack>
     );
