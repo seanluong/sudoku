@@ -2,16 +2,17 @@ import { Box, Paper, Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { ControlsState, selectCell } from "./reducers/ControlsReducer";
 import { SudokuAppState } from "./reducers/reducer";
+import { CellValue } from "./Sudoku";
 
 interface CellProps {
     rowIndex: number;
     columnIndex: number;
-    value: number;
+    cell?: CellValue;
     size: string;
     borderColor: string;
 }
 
-export const Cell = ({ rowIndex, columnIndex, value, size, borderColor }: CellProps) => {
+export const Cell = ({ rowIndex, columnIndex, cell, size, borderColor }: CellProps) => {
     const dispatch = useDispatch();
     const { status, input } = useSelector<SudokuAppState, ControlsState>(state => state.controls);
 
@@ -21,21 +22,27 @@ export const Cell = ({ rowIndex, columnIndex, value, size, borderColor }: CellPr
     const cellBorderBottom = (rowIndex: number, style: string) => ([2, 5].includes(rowIndex) ? style : "inherit");
     const cellBorderLeft = (columnIndex: number, style: string) => ([3, 6].includes(columnIndex) ? style : "inherit");
     const cellBorderRight = (columnIndex: number, style: string) => ([2, 5].includes(columnIndex) ? style : "inherit");
-    const cellBackgroundColor = (value: number) => {
+    const cellBackgroundColor = (cell: CellValue | undefined) => {
+        if (cell?.isOriginal) {
+            return "lightblue";
+        }
         if (cellSelected) {
             return "green";
         }
-        if (value) {
-            return "lightblue";
+        if (cell?.value) {
+            return "pink";
         }
         return "white";
     }
 
-    const handleClicked = () => {
+    const handleClicked = (event: React.MouseEvent) => {
+        if (cell?.isOriginal) {
+            return;
+        }
         dispatch(selectCell({
             rowIndex,
             columnIndex,
-            value,
+            cell,
         }))
     }
 
@@ -55,14 +62,14 @@ export const Cell = ({ rowIndex, columnIndex, value, size, borderColor }: CellPr
                 justifyContent: "center",
                 width: "100%",
                 height: "100%",
-                backgroundColor: cellBackgroundColor(value),
+                backgroundColor: cellBackgroundColor(cell),
                 borderTop: cellBorderTop(rowIndex, borderColor),
                 borderBottom: cellBorderBottom(rowIndex, borderColor),
                 borderLeft: cellBorderLeft(columnIndex, borderColor),
                 borderRight: cellBorderRight(columnIndex, borderColor),
             }}>
                 <Typography variant="h6">
-                    {value ? value : null}
+                    {cell?.value ? cell?.value : null}
                 </Typography>
             </Box>
         </Paper>

@@ -1,4 +1,4 @@
-import { CellMap } from "../types";
+import { CellMap } from "../Sudoku";
 import { cellsSlice } from "./CellsReducer";
 import { controlsSlice, ControlsState } from "./ControlsReducer";
 

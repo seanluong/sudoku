@@ -1,19 +1,22 @@
 import { Paper } from "@mui/material";
 import Grid from "@mui/material/Grid"
+import { useSelector } from "react-redux";
 import { Cell } from "./Cell";
-import { CellMap } from "./types";
+import { SudokuAppState } from "./reducers/reducer";
 
-export interface Board {
-    cells: CellMap;
+
+export interface CellValue {
+    value: number;
+    isOriginal: boolean;
 }
 
-export interface SudokuProps {
-    board: Board;
+export interface CellMap {
+    [key: string]: CellValue;
 }
 
-export const Sudoku = ({ board }: SudokuProps) => {
-    const { cells } = board;
-
+export const Sudoku = () => {
+    const cells = useSelector<SudokuAppState, CellMap>(state => state.cells);
+    
     const rows = [0, 1, 2, 3, 4, 5, 6, 7, 8];
     const columns = [0, 1, 2, 3, 4, 5, 6, 7, 8];
 
@@ -53,12 +56,12 @@ export const Sudoku = ({ board }: SudokuProps) => {
                             >
                                 {
                                     columns.map((column) => {
-                                        const cell = cells[`${row}:${column}`];
+                                        const cell= cells[`${row}:${column}`];
                                         return (
                                             <Cell key={`column-${column}`}
                                                 rowIndex={row}
                                                 columnIndex={column}
-                                                value={cell}
+                                                cell={cell}
                                                 size={cellSize}
                                                 borderColor={cellBorderColor} />
                                         );

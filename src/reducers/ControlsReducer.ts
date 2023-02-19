@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { CellValue } from "../Sudoku";
 
 type Status = "UNSELECTED" | "SELECTED";
 
@@ -16,12 +17,10 @@ export interface ControlsState {
 interface SelectCellPayload {
     rowIndex: number;
     columnIndex: number;
-    value?: number;
+    cell: CellValue | undefined;
 }
 
 interface ResetCellPayload {}
-
-type ControlsPayload = SelectCellPayload | ResetCellPayload;
 
 const initialState = {
     status: "UNSELECTED",
@@ -33,13 +32,13 @@ export const controlsSlice = createSlice({
     initialState,
     reducers: {
         selectCell: (state, action: PayloadAction<SelectCellPayload>) => {
-            const { rowIndex, columnIndex, value } = action.payload;
+            const { rowIndex, columnIndex, cell } = action.payload;
             return {
                 status: "SELECTED",
                 input: {
                     rowIndex,
                     columnIndex,
-                    value,
+                    value: cell?.value,
                 }
             };
         },
