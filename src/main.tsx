@@ -1,5 +1,6 @@
-import { Box } from '@mui/material';
+import { Stack } from '@mui/material';
 import { useEffect, useState } from 'react';
+import { Controls } from './Controls';
 import { Board, CellMap, Row, Sudoku } from './Sudoku';
 
 const generateBoard = (rowCount: number, columnCount: number): Board => {
@@ -43,15 +44,14 @@ export const Main = () => {
     const gitHubUrl = "/TBD";
 
     return (
-        <Box component={"main"} sx={{
-            display: "flex",
+        <Stack component={"main"} sx={{
             alignItems: "center",
-            justifyContent: "center",
+            justifyContent: "space-between",
             width: "100vw",
-            height: "100vh",
-            bgcolor: "yellow"
-        }}>
+            paddingTop: "1rem",
+        }} spacing={3}>
             <Sudoku board={board}/>
-        </Box>
+            <Controls />
+        </Stack>
     );
 }

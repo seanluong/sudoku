@@ -6,14 +6,17 @@ export const Header = () => {
     const gitHubUrl = "/TBD";
 
     return (
-        <AppBar position='fixed'>
-            <Toolbar sx={{
-                justifyContent: "center",
+        <>
+            <AppBar position='static' sx={{
             }}>
-                <IconButton href={gitHubUrl} target={"_blank"} rel="noreferrer noopener">
-                    <GitHubIcon />
-                </IconButton>
-            </Toolbar>
-        </AppBar>
+                <Toolbar sx={{
+                    justifyContent: "center",
+                }}>
+                    <IconButton href={gitHubUrl} target={"_blank"} rel="noreferrer noopener">
+                        <GitHubIcon />
+                    </IconButton>
+                </Toolbar>
+            </AppBar>
+        </>
     );
 }
