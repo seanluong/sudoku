@@ -8,14 +8,51 @@ interface SetCellPayload {
 }
 
 interface ResetAllCellsPayload {};
+
+
+// const PUZZLE = [
+//     [6, 2, 1, 0, 5, 9, 0, 0, 0],
+//     [4, 0, 0, 0, 0, 6, 3, 5, 0],
+//     [0, 0, 0, 0, 0, 0, 0, 0, 0],
+//     [2, 0, 8, 0, 0, 4, 9, 7, 6],
+//     [0, 7, 0, 0, 8, 2, 0, 0, 0],
+//     [0, 4, 0, 7, 9, 1, 0, 0, 5],
+//     [0, 0, 0, 0, 0, 0, 6, 0, 0],
+//     [0, 0, 3, 0, 6, 8, 0, 0, 0],
+//     [0, 6, 4, 2, 0, 3, 5, 0, 0],
+// ]
+
+const PUZZLE = [
+    [8, 2, 7, 1, 5, 4, 3, 9, 6],
+    [9, 6, 5, 3, 2, 7, 1, 4, 8],
+    [3, 4, 1, 6, 8, 9, 7, 5, 2],
+    [5, 9, 3, 4, 6, 8, 2, 7, 1],
+    [4, 7, 2, 5, 1, 3, 6, 8, 9],
+    [6, 1, 8, 9, 7, 2, 4, 3, 5],
+    [7, 8, 6, 2, 3, 5, 9, 1, 4],
+    [1, 5, 4, 7, 9, 6, 8, 2, 3],
+    [2, 3, 9, 8, 4, 1, 5, 6, 0],
+]
+
+const puzzleToCellMap = (puzzle: number[][]): CellMap => {
+    const cellMap = {} as CellMap;
+    puzzle.forEach((row, rowIndex) => {
+        row.forEach((value, colIndex) => {
+            if (value !== 0) {
+                const key = `${rowIndex}:${colIndex}`;
+                cellMap[key] = {
+                    value,
+                    isOriginal: true,
+                } as CellValue;
+            }
+        })
+    });
+    return cellMap;
+}
   
 export const cellsSlice = createSlice({
     name: 'cells',
-    initialState: {
-        '0:0': { value: 9, isOriginal: true } as CellValue,
-        '0:1': { value: 4, isOriginal: true } as CellValue,
-        '7:3': { value: 5, isOriginal: true } as CellValue,
-    } as CellMap,
+    initialState: puzzleToCellMap(PUZZLE),
     reducers: {
         setCell: (state, action: PayloadAction<SetCellPayload>) => {
             const { rowIndex, columnIndex, value } = action.payload;
