@@ -1,20 +1,42 @@
 import { Button, Stack, Typography } from "@mui/material"
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { CellsState, resetAllCells, validate } from "./reducers/CellsReducer";
+import { CellsState, newGame, resetAllCells, validate } from "./reducers/CellsReducer";
 import { SudokuAppState } from "./reducers/reducer";
+
+// Can only get a new game after some time
+const CAN_CHANGE_GAME_TIMEOUT = 5000;
 
 export const GameControls = () => {
     const dispatch = useDispatch();
     const { cells, gameStatus } = useSelector<SudokuAppState, CellsState>(state => state.cells);
+    const [canChangeGame, setCanChangeGame] = useState<boolean>(false);
+
+    useEffect(() => {
+        if (gameStatus === 'SOLVED') {
+            setCanChangeGame(true);
+        } else {
+            setCanChangeGame(false);
+            const timer = setTimeout(() => {
+                setCanChangeGame(true);
+            }, CAN_CHANGE_GAME_TIMEOUT);
+    
+            return () => clearTimeout(timer);
+        }
+    }, [gameStatus]);
 
     const handleResetAllClicked = (event: React.MouseEvent) => {
-        dispatch(resetAllCells({}))
+        dispatch(resetAllCells())
     }
     const handleValidateClicked = (event: React.MouseEvent) => {
-        dispatch(validate({}));
+        dispatch(validate());
+    }
+    const handleNewGameClicked = (event: React.MouseEvent) => {
+        dispatch(newGame());
     }
 
     const isBoardFull = Object.keys(cells).length === 81;
+    const canResetBoard = Object.values(cells).some((cellValue) => cellValue.isOriginal === false);
     const gameSolved = gameStatus === 'SOLVED';
     return (
         <Stack direction={"row"} 
@@ -23,7 +45,11 @@ export const GameControls = () => {
                 justifyContent: "center",
                 alignItems: "center",
             }}>
-                <Button variant="contained" onClick={handleValidateClicked}>New Game</Button>
+                <Button variant="contained"
+                        disabled={!canChangeGame}
+                        onClick={handleNewGameClicked}>
+                    New Game
+                </Button>
                 {
                     gameSolved ? (
                         <>
@@ -35,11 +61,14 @@ export const GameControls = () => {
                     (
                         <>
                             <Button variant="contained"
-                                onClick={handleValidateClicked}
-                                disabled={!isBoardFull}>Validate</Button>
+                                    onClick={handleValidateClicked}
+                                    disabled={!isBoardFull}>
+                                Validate
+                            </Button>
                             <Button variant="contained"
-                                color="secondary"
-                                onClick={handleResetAllClicked}>
+                                    color="secondary"
+                                    disabled={!canResetBoard}
+                                    onClick={handleResetAllClicked}>
                                 Reset All
                             </Button>
                         </>

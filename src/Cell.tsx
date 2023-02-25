@@ -18,10 +18,10 @@ export const Cell = ({ rowIndex, columnIndex, cell, size, borderColor }: CellPro
 
     const cellSelected = status === "SELECTED" && input.rowIndex === rowIndex && input.columnIndex === columnIndex;
 
-    const cellBorderTop = (rowIndex: number, style: string) => ([3, 6].includes(rowIndex) ? style : "inherit");
-    const cellBorderBottom = (rowIndex: number, style: string) => ([2, 5].includes(rowIndex) ? style : "inherit");
-    const cellBorderLeft = (columnIndex: number, style: string) => ([3, 6].includes(columnIndex) ? style : "inherit");
-    const cellBorderRight = (columnIndex: number, style: string) => ([2, 5].includes(columnIndex) ? style : "inherit");
+    const cellBorderTop = (rowIndex: number, style: string) => ([3, 6].includes(rowIndex) ? style : "none");
+    const cellBorderBottom = (rowIndex: number, style: string) => ([2, 5].includes(rowIndex) ? style : "none");
+    const cellBorderLeft = (columnIndex: number, style: string) => ([3, 6].includes(columnIndex) ? style : "none");
+    const cellBorderRight = (columnIndex: number, style: string) => ([2, 5].includes(columnIndex) ? style : "none");
     const cellBackgroundColor = (cell: CellValue | undefined) => {
         if (cell?.isOriginal) {
             return "lightblue";
@@ -53,7 +53,7 @@ export const Cell = ({ rowIndex, columnIndex, cell, size, borderColor }: CellPro
             sx={{
                 flex: `1 1 ${size}`,
                 width: size,
-                padding: "0.05em",
+                padding: "1px",
                 bgcolor: "rgba(0, 0, 0, 0.2)",
             }}>
             <Box sx={{

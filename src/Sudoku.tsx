@@ -21,27 +21,20 @@ export const Sudoku = () => {
     const rows = [0, 1, 2, 3, 4, 5, 6, 7, 8];
     const columns = [0, 1, 2, 3, 4, 5, 6, 7, 8];
 
-    const containerSize = "min(75vw, 75vh)";
-    const gridSize = `calc(${containerSize} * 0.98)`;
+    const gridSize = "min(75vw, 75vh)";
     const outerBackgroundColor = "rgba(0, 0, 100, 0.8)";
 
     const cellSize = `calc(${gridSize} / ${rows.length})`;
-    const cellBorderColor = `0.1rem solid ${outerBackgroundColor}`;
+    const cellBorderColor = `2px solid ${outerBackgroundColor}`;
 
     return (
         <Paper sx={{
             bgcolor: outerBackgroundColor,
-            flexBasis: containerSize,
-            height: containerSize,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
         }} elevation={4}>
-            <Grid container
-                direction="column"
-                sx={{
-                    width: gridSize,
-                }}>
+            <Grid container direction="column" >
                 {
                     rows.map((row) => {
                         return (

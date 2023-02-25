@@ -15,24 +15,19 @@ interface SetCellPayload {
     value: number;
 }
 
-interface ResetAllCellsPayload {};
+const PUZZLE_HARD = [
+    [6, 2, 1, 0, 5, 9, 0, 0, 0],
+    [4, 0, 0, 0, 0, 6, 3, 5, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [2, 0, 8, 0, 0, 4, 9, 7, 6],
+    [0, 7, 0, 0, 8, 2, 0, 0, 0],
+    [0, 4, 0, 7, 9, 1, 0, 0, 5],
+    [0, 0, 0, 0, 0, 0, 6, 0, 0],
+    [0, 0, 3, 0, 6, 8, 0, 0, 0],
+    [0, 6, 4, 2, 0, 3, 5, 0, 0],
+]
 
-interface ValidatePayload {};
-
-
-// const PUZZLE = [
-//     [6, 2, 1, 0, 5, 9, 0, 0, 0],
-//     [4, 0, 0, 0, 0, 6, 3, 5, 0],
-//     [0, 0, 0, 0, 0, 0, 0, 0, 0],
-//     [2, 0, 8, 0, 0, 4, 9, 7, 6],
-//     [0, 7, 0, 0, 8, 2, 0, 0, 0],
-//     [0, 4, 0, 7, 9, 1, 0, 0, 5],
-//     [0, 0, 0, 0, 0, 0, 6, 0, 0],
-//     [0, 0, 3, 0, 6, 8, 0, 0, 0],
-//     [0, 6, 4, 2, 0, 3, 5, 0, 0],
-// ]
-
-const PUZZLE = [
+const PUZZLE_EASY = [
     [8, 2, 7, 1, 5, 4, 3, 9, 6],
     [9, 6, 5, 3, 2, 7, 1, 4, 8],
     [3, 4, 1, 6, 8, 9, 7, 5, 2],
@@ -129,7 +124,7 @@ const validateBoard = (cells: CellMap): boolean => {
 export const cellsSlice = createSlice({
     name: 'cells',
     initialState: {
-        cells: puzzleToCellMap(PUZZLE),
+        cells: puzzleToCellMap(PUZZLE_EASY),
         gameStatus: 'WIP',
     },
     reducers: {
@@ -141,17 +136,23 @@ export const cellsSlice = createSlice({
                 isOriginal: false,
             }
         },
-        resetAllCells: ({ cells }, action: PayloadAction<ResetAllCellsPayload>) => {
+        resetAllCells: ({ cells }) => {
             Object.entries(cells).map(([key, value]) => {
                 if (!value.isOriginal) {
                     delete cells[key];
                 }
             })
         },
-        validate: (state, action: PayloadAction<ValidatePayload>) => {
+        newGame: (state) => {
+            // TODO: fetch puzzle from an online puzzle generator
+            state.cells = puzzleToCellMap(PUZZLE_HARD);
+            state.gameStatus = 'WIP';
+        },
+        validate: (state) => {
+            // TODO" add more visual effects based on the validation results
             state.gameStatus = validateBoard(state.cells) ? 'SOLVED' : 'WIP';
         },
     }
 })
 
-export const { setCell, resetAllCells, validate } = cellsSlice.actions;
+export const { newGame, setCell, resetAllCells, validate } = cellsSlice.actions;
