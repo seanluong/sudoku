@@ -1,5 +1,6 @@
 import { Stack } from '@mui/material';
-import { Controls } from './Controls';
+import { SetResetCellControls } from './SetResetCellControls';
+import { GameControls } from './GameControls';
 import { Sudoku } from './Sudoku';
 
 
@@ -14,8 +15,9 @@ export const Main = () => {
             width: "100vw",
             paddingTop: "1rem",
         }} spacing={3}>
+            <GameControls />
             <Sudoku />
-            <Controls />
+            <SetResetCellControls />
         </Stack>
     );
 }

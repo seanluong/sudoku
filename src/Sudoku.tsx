@@ -2,6 +2,7 @@ import { Paper } from "@mui/material";
 import Grid from "@mui/material/Grid"
 import { useSelector } from "react-redux";
 import { Cell } from "./Cell";
+import { CellsState } from "./reducers/CellsReducer";
 import { SudokuAppState } from "./reducers/reducer";
 
 
@@ -15,7 +16,7 @@ export interface CellMap {
 }
 
 export const Sudoku = () => {
-    const cells = useSelector<SudokuAppState, CellMap>(state => state.cells);
+    const { cells } = useSelector<SudokuAppState, CellsState>(state => state.cells);
     
     const rows = [0, 1, 2, 3, 4, 5, 6, 7, 8];
     const columns = [0, 1, 2, 3, 4, 5, 6, 7, 8];

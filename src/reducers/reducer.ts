@@ -1,10 +1,9 @@
-import { CellMap } from "../Sudoku";
-import { cellsSlice } from "./CellsReducer";
+import { cellsSlice, CellsState } from "./CellsReducer";
 import { controlsSlice, ControlsState } from "./ControlsReducer";
 
 
 export interface SudokuAppState {
-    cells: CellMap;
+    cells: CellsState;
     controls: ControlsState;
 }
 

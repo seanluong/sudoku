@@ -1,6 +1,14 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { CellMap, CellValue } from "../Sudoku";
 
+
+type GameStatus = "SOLVED" | "WIP";
+
+export interface CellsState {
+    cells: CellMap;
+    gameStatus: GameStatus;
+}
+
 interface SetCellPayload {
     rowIndex: number;
     columnIndex: number;
@@ -8,6 +16,8 @@ interface SetCellPayload {
 }
 
 interface ResetAllCellsPayload {};
+
+interface ValidatePayload {};
 
 
 // const PUZZLE = [
@@ -34,12 +44,16 @@ const PUZZLE = [
     [2, 3, 9, 8, 4, 1, 5, 6, 0],
 ]
 
+const cellMapKey = (rowIndex: number, columnIndex: number): string => {
+    return `${rowIndex}:${columnIndex}`;
+}
+
 const puzzleToCellMap = (puzzle: number[][]): CellMap => {
     const cellMap = {} as CellMap;
     puzzle.forEach((row, rowIndex) => {
         row.forEach((value, colIndex) => {
             if (value !== 0) {
-                const key = `${rowIndex}:${colIndex}`;
+                const key = cellMapKey(rowIndex, colIndex)
                 cellMap[key] = {
                     value,
                     isOriginal: true,
@@ -49,32 +63,95 @@ const puzzleToCellMap = (puzzle: number[][]): CellMap => {
     });
     return cellMap;
 }
+
+const fromOneToNine = (numbers: number[]) => {
+    const set = new Set();
+    numbers.forEach((number) => {
+        set.add(number);
+    })
+    return set.size === 9;
+}
+
+const validateRow = (cells: CellMap, rowIndex: number): boolean => {
+    const indices = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+    return fromOneToNine(indices.map((columnIndex) => {
+        const cell = cells[cellMapKey(rowIndex, columnIndex)];
+        return cell.value;
+    }));
+}
+
+const validateColumn = (cells: CellMap, colummIndex: number): boolean => {
+    const indices = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+    return fromOneToNine(indices.map((rowIndex) => {
+        const cell = cells[cellMapKey(rowIndex, colummIndex)];
+        return cell.value;
+    }));
+}
+
+const validateSubSquare = (cells: CellMap, subSquareIndex: number): boolean => {
+    const numbers = [];
+    const rowIndex = Math.floor(subSquareIndex / 3) * 3;
+    const colIndex = (subSquareIndex % 3) * 3;
+    for (let r=0;r<3;r++) {
+        for (let c=0;c<3;c++) {
+            const cell = cells[cellMapKey(rowIndex + r, colIndex + c)];
+            numbers.push(cell.value);
+        }
+    }
+    return fromOneToNine(numbers);
+}
+
+const validateBoard = (cells: CellMap): boolean => {
+    const indices = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+
+    const validRows = indices.every((index) => validateRow(cells, index));
+    if (!validRows) {
+        console.log("invalid row");
+        return false;
+    }
+
+    const validColumns = indices.every((index) => validateColumn(cells, index));
+    if (!validColumns) {
+        console.log("invalid column");
+        return false;
+    }
+
+    const validSubSquare = indices.every((index) => validateSubSquare(cells, index));
+    if (!validSubSquare) {
+        console.log("invalid sub square");
+        return false;
+    }
+
+    console.log("valid board");
+    return true;
+}
   
 export const cellsSlice = createSlice({
     name: 'cells',
-    initialState: puzzleToCellMap(PUZZLE),
+    initialState: {
+        cells: puzzleToCellMap(PUZZLE),
+        gameStatus: 'WIP',
+    },
     reducers: {
         setCell: (state, action: PayloadAction<SetCellPayload>) => {
             const { rowIndex, columnIndex, value } = action.payload;
             const key = `${rowIndex}:${columnIndex}`;
-            return {
-                ...state,
-                [key]: {
-                    value,
-                    isOriginal: false,
-                }
+            state.cells[key] = {
+                value,
+                isOriginal: false,
             }
         },
-        resetAllCells: (state, action: PayloadAction<ResetAllCellsPayload>) => {
-            const nextState = {} as CellMap;
-            Object.entries(state).map(([key, value]) => {
-                if (value.isOriginal) {
-                    nextState[key] = value;
+        resetAllCells: ({ cells }, action: PayloadAction<ResetAllCellsPayload>) => {
+            Object.entries(cells).map(([key, value]) => {
+                if (!value.isOriginal) {
+                    delete cells[key];
                 }
             })
-            return nextState;
+        },
+        validate: (state, action: PayloadAction<ValidatePayload>) => {
+            state.gameStatus = validateBoard(state.cells) ? 'SOLVED' : 'WIP';
         },
     }
 })
 
-export const { setCell, resetAllCells } = cellsSlice.actions;
+export const { setCell, resetAllCells, validate } = cellsSlice.actions;

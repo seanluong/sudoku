@@ -1,11 +1,12 @@
 import { Button, Stack, TextField } from "@mui/material"
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { resetAllCells, setCell } from "./reducers/CellsReducer";
+import { setCell } from "./reducers/CellsReducer";
 import { ControlsState, resetCell } from "./reducers/ControlsReducer";
 import { SudokuAppState } from "./reducers/reducer";
 
-export const Controls = () => {
+
+export const SetResetCellControls = () => {
     const dispatch = useDispatch();
     const { status, input } = useSelector<SudokuAppState, ControlsState>(state => state.controls);
     const { rowIndex, columnIndex, value } = input;
@@ -14,9 +15,6 @@ export const Controls = () => {
 
     const label = (rowIndex !== undefined && columnIndex !== undefined) ? `Row ${rowIndex + 1} - Column ${columnIndex + 1}` : '';
 
-    const handleResetAllClicked = (event: React.MouseEvent) => {
-        dispatch(resetAllCells({}))
-    }
     const handleResetCellClicked = (event: React.MouseEvent) => {
         dispatch(resetCell({}))
     }
@@ -51,10 +49,22 @@ export const Controls = () => {
                 justifyContent: "center",
                 alignItems: "center",
             }}>
-            <TextField variant="outlined" defaultValue={localValue} label={label} disabled={status === "UNSELECTED"} onChange={handleTextFieldChanged}/>
-            <Button variant="contained" onClick={handleSetClicked} disabled={status === "UNSELECTED"}>Set</Button>
-            <Button variant="contained" color="secondary" disabled={status === "UNSELECTED"} onClick={handleResetCellClicked}>Reset Cell</Button>
-            <Button variant="contained" color="secondary" onClick={handleResetAllClicked}>Reset All</Button>
+            <TextField variant="outlined"
+                defaultValue={localValue}
+                label={label}
+                disabled={status === "UNSELECTED"}
+                onChange={handleTextFieldChanged}/>
+            <Button variant="contained"
+                onClick={handleSetClicked}
+                disabled={status === "UNSELECTED"}>
+                Set
+            </Button>
+            <Button variant="contained"
+                color="secondary"
+                disabled={status === "UNSELECTED"}
+                onClick={handleResetCellClicked}>
+                Reset Cell
+            </Button>
         </Stack>
     );
 }
