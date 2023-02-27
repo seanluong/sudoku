@@ -27,10 +27,10 @@ export const Cell = ({ rowIndex, columnIndex, cell, size, borderColor }: CellPro
             return "lightblue";
         }
         if (cellSelected) {
-            return "green";
+            return "pink";
         }
         if (cell?.value) {
-            return "pink";
+            return "lightyellow";
         }
         return "white";
     }
