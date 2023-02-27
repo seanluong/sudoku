@@ -36,7 +36,7 @@ export const GameControls = () => {
                 <Button variant="contained"
                         onClick={handleNewGameClicked}
                         size="medium">
-                    New Game
+                    New
                 </Button>
                 {
                     gameSolved ? (
@@ -59,7 +59,7 @@ export const GameControls = () => {
                                     color="secondary"
                                     disabled={!canResetBoard}
                                     onClick={handleResetAllClicked}>
-                                Reset All
+                                Reset
                             </Button>
                         </>
                     )

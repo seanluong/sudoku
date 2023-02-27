@@ -32,11 +32,11 @@ export const Sudoku = () => {
     const rows = [0, 1, 2, 3, 4, 5, 6, 7, 8];
     const columns = [0, 1, 2, 3, 4, 5, 6, 7, 8];
 
-    const gridSize = "min(65vw, 65vh)";
+    const gridSize = "min(75vw, 75vh)";
     const outerBackgroundColor = "rgba(0, 0, 100, 0.8)";
 
     const cellSize = `calc(${gridSize} / ${rows.length})`;
-    const cellBorderColor = `2px solid ${outerBackgroundColor}`;
+    const cellBorderColor = `1px solid ${outerBackgroundColor}`;
 
     return (
         <Paper sx={{
