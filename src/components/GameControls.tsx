@@ -3,9 +3,10 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { CellsState, newGame, resetAllCells, validate } from "../reducers/CellsReducer";
 import { SudokuAppState } from "../reducers/reducer";
+import { fetchPuzzle } from "../utils/puzzleFetcher";
 
 // Can only get a new game after some time
-const CAN_CHANGE_GAME_TIMEOUT = 5000;
+const CAN_CHANGE_GAME_TIMEOUT = 1000;
 
 export const GameControls = () => {
     const dispatch = useDispatch();
@@ -32,7 +33,10 @@ export const GameControls = () => {
         dispatch(validate());
     }
     const handleNewGameClicked = (event: React.MouseEvent) => {
-        dispatch(newGame());
+        // TODO display UI based on the status of loading a new puzzle
+        fetchPuzzle().then(() => {
+            dispatch(newGame());
+        });
     }
 
     const isBoardFull = Object.keys(cells).length === 81;

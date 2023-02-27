@@ -1,0 +1,10 @@
+{
+    "name": "fetch-puzzle",
+    "version": "1.0.0",
+    "description": "",
+    "dependencies": {
+        "node-html-parser": "^6.1.5",
+        "request": "^2.88.2",
+        "request-promise": "^4.2.6"
+    }
+}
