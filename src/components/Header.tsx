@@ -2,8 +2,7 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 import { AppBar, IconButton, Toolbar } from '@mui/material';
 
 export const Header = () => {
-    // TODO: update the github link
-    const gitHubUrl = "/TBD";
+    const gitHubUrl = "https://github.com/seanluong/sudoku";
 
     return (
         <>
