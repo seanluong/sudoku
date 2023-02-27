@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { CellValue } from "../Sudoku";
+import { CellValue } from "../components/Sudoku";
 
 type Status = "UNSELECTED" | "SELECTED";
 

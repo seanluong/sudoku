@@ -1,9 +1,9 @@
 import { Button, Stack, TextField } from "@mui/material"
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setCell } from "./reducers/CellsReducer";
-import { ControlsState, resetCell } from "./reducers/ControlsReducer";
-import { SudokuAppState } from "./reducers/reducer";
+import { setCell } from "../reducers/CellsReducer";
+import { ControlsState, resetCell } from "../reducers/ControlsReducer";
+import { SudokuAppState } from "../reducers/reducer";
 
 
 export const SetResetCellControls = () => {

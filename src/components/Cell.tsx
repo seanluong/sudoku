@@ -1,7 +1,7 @@
 import { Box, Paper, Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { ControlsState, selectCell } from "./reducers/ControlsReducer";
-import { SudokuAppState } from "./reducers/reducer";
+import { ControlsState, selectCell } from "../reducers/ControlsReducer";
+import { SudokuAppState } from "../reducers/reducer";
 import { CellValue } from "./Sudoku";
 
 interface CellProps {

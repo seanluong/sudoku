@@ -1,8 +1,8 @@
 import { Button, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { CellsState, newGame, resetAllCells, validate } from "./reducers/CellsReducer";
-import { SudokuAppState } from "./reducers/reducer";
+import { CellsState, newGame, resetAllCells, validate } from "../reducers/CellsReducer";
+import { SudokuAppState } from "../reducers/reducer";
 
 // Can only get a new game after some time
 const CAN_CHANGE_GAME_TIMEOUT = 5000;

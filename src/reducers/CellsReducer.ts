@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { CellMap, CellValue } from "../Sudoku";
+import { CellMap, CellValue } from "../components/Sudoku";
 
 
 type GameStatus = "SOLVED" | "WIP";

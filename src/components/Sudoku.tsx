@@ -2,8 +2,8 @@ import { Paper } from "@mui/material";
 import Grid from "@mui/material/Grid"
 import { useSelector } from "react-redux";
 import { Cell } from "./Cell";
-import { CellsState } from "./reducers/CellsReducer";
-import { SudokuAppState } from "./reducers/reducer";
+import { CellsState } from "../reducers/CellsReducer";
+import { SudokuAppState } from "../reducers/reducer";
 
 
 export interface CellValue {
