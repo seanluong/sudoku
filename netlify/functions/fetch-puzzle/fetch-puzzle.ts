@@ -54,7 +54,6 @@ const htmlToPuzzle = (dom) => {
 
 exports.handler = async (event, context) => {
   try {
-
     const rpOptions = {
       uri: process.env.puzzle_url,
       headers: {

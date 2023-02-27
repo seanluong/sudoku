@@ -1,9 +1,11 @@
 import { Paper } from "@mui/material";
 import Grid from "@mui/material/Grid"
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Cell } from "./Cell";
-import { CellsState } from "../reducers/CellsReducer";
+import { CellsState, newGame } from "../reducers/CellsReducer";
 import { SudokuAppState } from "../reducers/reducer";
+import { useEffect } from "react";
+import { fetchPuzzle, Puzzle } from "../utils/puzzleFetcher";
 
 
 export interface CellValue {
@@ -16,7 +18,16 @@ export interface CellMap {
 }
 
 export const Sudoku = () => {
+    const dispatch = useDispatch();
     const { cells } = useSelector<SudokuAppState, CellsState>(state => state.cells);
+
+    useEffect(() => {
+        fetchPuzzle().then((puzzle?: Puzzle) => {
+            if (puzzle) {
+                dispatch(newGame({ puzzle }));
+            }
+        });
+    }, []);
     
     const rows = [0, 1, 2, 3, 4, 5, 6, 7, 8];
     const columns = [0, 1, 2, 3, 4, 5, 6, 7, 8];

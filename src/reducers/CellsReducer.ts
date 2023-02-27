@@ -23,39 +23,11 @@ interface SetCellPayload {
 interface NewGamePayload {
     puzzle: Puzzle;
 }
-
-const INITIAL_PUZZLE = [
-    [6, 2, 1, 0, 5, 9, 0, 0, 0],
-    [4, 0, 0, 0, 0, 6, 3, 5, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [2, 0, 8, 0, 0, 4, 9, 7, 6],
-    [0, 7, 0, 0, 8, 2, 0, 0, 0],
-    [0, 4, 0, 7, 9, 1, 0, 0, 5],
-    [0, 0, 0, 0, 0, 0, 6, 0, 0],
-    [0, 0, 3, 0, 6, 8, 0, 0, 0],
-    [0, 6, 4, 2, 0, 3, 5, 0, 0],
-]
-
-const puzzleToCellMap = (puzzle: number[][]): CellMap => {
-    const cellMap = {} as CellMap;
-    puzzle.forEach((row, rowIndex) => {
-        row.forEach((value, colIndex) => {
-            if (value !== 0) {
-                const key = cellMapKey(rowIndex, colIndex)
-                cellMap[key] = {
-                    value,
-                    isOriginal: true,
-                } as CellValue;
-            }
-        })
-    });
-    return cellMap;
-}
   
 export const cellsSlice = createSlice({
     name: 'cells',
     initialState: {
-        cells: puzzleToCellMap(INITIAL_PUZZLE),
+        cells: {} as CellMap,
         gameStatus: 'WIP',
         validationStatus: "N/A",
     } as CellsState,
