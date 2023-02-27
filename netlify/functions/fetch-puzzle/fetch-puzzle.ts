@@ -1,58 +1,47 @@
-const { parse } = require('node-html-parser');
 const request = require("request");
 const rp = require("request-promise");
+const { htmlToPuzzle } = require("./html-to-puzzle");
 
-// TODO: implement a rate limiter here
-
-interface CellValue {
-  row: number;
-  col: number;
-  value: number;
+interface PuzzleCache {
+  puzzles: Puzzle[];
+  today: string;
 }
 
-const coordinate = (index: number) => {
-  const row = Math.floor(index / 9);
-  const col = index % 9;
-  return { row, col };
+const puzzleCache = {} as PuzzleCache;
+
+const rateLimitReached = (cache: PuzzleCache) => {
+  const today = (new Date()).toLocaleDateString();
+  const maxPuzzleCount = Number.parseInt(process.env.max_puzzle_count || '') || 5;
+  return (cache.today === today && cache.puzzles.length === maxPuzzleCount);
 }
 
-const htmlToPuzzle = (dom) => {
-    const cssSelector = '#sudoku';
-    const puzzleTable = dom.querySelector(cssSelector);
-    if (!puzzleTable) {
-        throw new Error(`Cannot find element with selector ${cssSelector}`);
-    }
+const randomPuzzleInCache = ({ puzzles }: PuzzleCache) => {
+  const index = Math.floor(Math.random() * puzzles.length);
+  return puzzles[index];
+}
 
-    const cells = puzzleTable.querySelectorAll("td") as NodeList;
-    if (cells.length !== 81) {
-      throw new Error(`A puzzle should have 81 cells but only ${cells.length} found`);
-    }
-
-    const shownCells = [] as CellValue[];
-    const hiddenCells = [] as CellValue[];
-    cells.forEach((cell: Node, index) => {
-      const { row, col } = coordinate(index);
-      const element = cell as HTMLSpanElement;
-      const value = element.innerText.trim();
-      const shown = !value.endsWith("&nbsp;");
-      if (shown) {
-        shownCells.push({
-          row, col, value: Number.parseInt(value)
-        });
-      } else {
-        hiddenCells.push({
-          row, col, value: Number.parseInt(value[0])
-        });
-      }
-    });
-
-    return {
-      shown: shownCells,
-      hidden: hiddenCells,
-    };
+const resetCacheIfNeeded = (cache: PuzzleCache) => {
+  const today = (new Date()).toLocaleDateString();
+  if (today !== cache.today) {
+    cache.today = today;
+    cache.puzzles = [];
+  }
 }
 
 exports.handler = async (event, context) => {
+  let puzzle: Puzzle;
+
+  resetCacheIfNeeded(puzzleCache);
+  if (rateLimitReached(puzzleCache)) {
+    puzzle = randomPuzzleInCache(puzzleCache);
+    return {
+      statusCode: 200,
+      body: JSON.stringify({
+        puzzle,
+      }),
+    }
+  }
+  
   try {
     const rpOptions = {
       uri: process.env.puzzle_url,
@@ -61,15 +50,8 @@ exports.handler = async (event, context) => {
       },
     };
     const html = await rp(rpOptions);
-    const dom = parse(html);
-    const puzzle = htmlToPuzzle(dom);
-
-    return {
-      statusCode: 200,
-      body: JSON.stringify({
-        puzzle,
-      }),
-    }
+    puzzle = htmlToPuzzle(html);
+    puzzleCache.puzzles.push(puzzle);
   } catch (err) {
     return {
       statusCode: err.statusCode || 500,
@@ -77,5 +59,12 @@ exports.handler = async (event, context) => {
         error: err.message
       })
     }
+  }
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify({
+      puzzle,
+    }),
   }
 }
