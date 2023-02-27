@@ -23,7 +23,8 @@ interface NewGamePayload {
     puzzle: Puzzle;
 }
 
-const PUZZLE_HARD = [
+// TODO: remove the hard-coded puzzles
+const INITIAL_PUZZLE = [
     [6, 2, 1, 0, 5, 9, 0, 0, 0],
     [4, 0, 0, 0, 0, 6, 3, 5, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -33,18 +34,6 @@ const PUZZLE_HARD = [
     [0, 0, 0, 0, 0, 0, 6, 0, 0],
     [0, 0, 3, 0, 6, 8, 0, 0, 0],
     [0, 6, 4, 2, 0, 3, 5, 0, 0],
-]
-
-const PUZZLE_EASY = [
-    [8, 2, 7, 1, 5, 4, 3, 9, 6],
-    [9, 6, 5, 3, 2, 7, 1, 4, 8],
-    [3, 4, 1, 6, 8, 9, 7, 5, 2],
-    [5, 9, 3, 4, 6, 8, 2, 7, 1],
-    [4, 7, 2, 5, 1, 3, 6, 8, 9],
-    [6, 1, 8, 9, 7, 2, 4, 3, 5],
-    [7, 8, 6, 2, 3, 5, 9, 1, 4],
-    [1, 5, 4, 7, 9, 6, 8, 2, 3],
-    [2, 3, 9, 8, 4, 1, 5, 6, 0],
 ]
 
 const cellMapKey = (rowIndex: number, columnIndex: number): string => {
@@ -104,6 +93,7 @@ const validateSubSquare = (cells: CellMap, subSquareIndex: number): boolean => {
     return fromOneToNine(numbers);
 }
 
+// TODO: move validation logic to its own module, add tests, and return more meaningful error object
 const validateBoard = (cells: CellMap): boolean => {
     const indices = [0, 1, 2, 3, 4, 5, 6, 7, 8];
 
@@ -132,7 +122,7 @@ const validateBoard = (cells: CellMap): boolean => {
 export const cellsSlice = createSlice({
     name: 'cells',
     initialState: {
-        cells: puzzleToCellMap(PUZZLE_EASY),
+        cells: puzzleToCellMap(INITIAL_PUZZLE),
         gameStatus: 'WIP',
         validationStatus: "N/A",
     } as CellsState,
@@ -155,6 +145,8 @@ export const cellsSlice = createSlice({
             validationStatus = "N/A";
         },
         newGame: (state, action: PayloadAction<NewGamePayload>) => {
+            // TODO: implement a cheat code to make use of the hidden values to quickly finish the game
+            // this is useful for testing purposes
             const { puzzle } = action.payload;
             const { shown } = puzzle;
             state.cells = {} as CellMap;

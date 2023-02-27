@@ -2,6 +2,8 @@ const { parse } = require('node-html-parser');
 const request = require("request");
 const rp = require("request-promise");
 
+// TODO: implement a rate limiter here
+
 interface CellValue {
   row: number;
   col: number;

@@ -36,7 +36,6 @@ export const GameControls = () => {
         // TODO display UI based on the status of loading a new puzzle
         fetchPuzzle().then((puzzle?: Puzzle) => {
             if (puzzle) {
-                console.log(puzzle);
                 dispatch(newGame({ puzzle }));
             }
         });
