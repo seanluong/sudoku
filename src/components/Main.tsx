@@ -3,11 +3,7 @@ import { SetResetCellControls } from './SetResetCellControls';
 import { GameControls } from './GameControls';
 import { Sudoku } from './Sudoku';
 
-
 export const Main = () => {
-    // TODO: update the github link
-    const gitHubUrl = "/TBD";
-
     return (
         <Stack component={"main"} sx={{
             alignItems: "center",
