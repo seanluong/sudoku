@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { CellsState, newGame, resetAllCells, validate } from "../reducers/CellsReducer";
 import { SudokuAppState } from "../reducers/reducer";
-import { fetchPuzzle } from "../utils/puzzleFetcher";
+import { fetchPuzzle, Puzzle } from "../utils/puzzleFetcher";
 
 // Can only get a new game after some time
 const CAN_CHANGE_GAME_TIMEOUT = 1000;
@@ -34,8 +34,11 @@ export const GameControls = () => {
     }
     const handleNewGameClicked = (event: React.MouseEvent) => {
         // TODO display UI based on the status of loading a new puzzle
-        fetchPuzzle().then(() => {
-            dispatch(newGame());
+        fetchPuzzle().then((puzzle?: Puzzle) => {
+            if (puzzle) {
+                console.log(puzzle);
+                dispatch(newGame({ puzzle }));
+            }
         });
     }
 

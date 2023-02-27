@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { CellMap, CellValue } from "../components/Sudoku";
+import { Puzzle } from "../utils/puzzleFetcher";
 
 
 type GameStatus = "SOLVED" | "WIP";
@@ -16,6 +17,10 @@ interface SetCellPayload {
     rowIndex: number;
     columnIndex: number;
     value: number;
+}
+
+interface NewGamePayload {
+    puzzle: Puzzle;
 }
 
 const PUZZLE_HARD = [
@@ -149,9 +154,17 @@ export const cellsSlice = createSlice({
             gameStatus = "WIP";
             validationStatus = "N/A";
         },
-        newGame: (state) => {
-            // TODO: fetch puzzle from an online puzzle generator
-            state.cells = puzzleToCellMap(PUZZLE_HARD);
+        newGame: (state, action: PayloadAction<NewGamePayload>) => {
+            const { puzzle } = action.payload;
+            const { shown } = puzzle;
+            state.cells = {} as CellMap;
+            shown.forEach(({ row, col, value }) => {
+                const key = cellMapKey(row, col);
+                state.cells[key] = {
+                    value,
+                    isOriginal: true,
+                };
+            });
             state.gameStatus = 'WIP';
             state.validationStatus = "N/A";
         },

@@ -45,7 +45,7 @@ const htmlToPuzzle = (dom) => {
     });
 
     return {
-      show: shownCells,
+      shown: shownCells,
       hidden: hiddenCells,
     };
 }
@@ -66,7 +66,7 @@ exports.handler = async (event, context) => {
     return {
       statusCode: 200,
       body: JSON.stringify({
-        puzzle: puzzle,
+        puzzle,
       }),
     }
   } catch (err) {
