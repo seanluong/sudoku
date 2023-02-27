@@ -4,9 +4,12 @@ import { CellMap, CellValue } from "../components/Sudoku";
 
 type GameStatus = "SOLVED" | "WIP";
 
+export type ValidationStatus = "N/A" | "VALID" | "INVALID";
+
 export interface CellsState {
     cells: CellMap;
     gameStatus: GameStatus;
+    validationStatus: ValidationStatus;
 }
 
 interface SetCellPayload {
@@ -126,7 +129,8 @@ export const cellsSlice = createSlice({
     initialState: {
         cells: puzzleToCellMap(PUZZLE_EASY),
         gameStatus: 'WIP',
-    },
+        validationStatus: "N/A",
+    } as CellsState,
     reducers: {
         setCell: (state, action: PayloadAction<SetCellPayload>) => {
             const { rowIndex, columnIndex, value } = action.payload;
@@ -136,23 +140,30 @@ export const cellsSlice = createSlice({
                 isOriginal: false,
             }
         },
-        resetAllCells: ({ cells }) => {
+        resetAllCells: ({ cells, gameStatus, validationStatus }) => {
             Object.entries(cells).map(([key, value]) => {
                 if (!value.isOriginal) {
                     delete cells[key];
                 }
             })
+            gameStatus = "WIP";
+            validationStatus = "N/A";
         },
         newGame: (state) => {
             // TODO: fetch puzzle from an online puzzle generator
             state.cells = puzzleToCellMap(PUZZLE_HARD);
             state.gameStatus = 'WIP';
+            state.validationStatus = "N/A";
         },
         validate: (state) => {
-            // TODO" add more visual effects based on the validation results
-            state.gameStatus = validateBoard(state.cells) ? 'SOLVED' : 'WIP';
+            const valid = validateBoard(state.cells);
+            state.gameStatus = valid ? 'SOLVED' : 'WIP';
+            state.validationStatus = valid ? 'VALID' : 'INVALID';
+        },
+        invalidate: (state) => {
+            state.validationStatus = 'N/A';
         },
     }
 })
 
-export const { newGame, setCell, resetAllCells, validate } = cellsSlice.actions;
+export const { newGame, setCell, resetAllCells, validate, invalidate } = cellsSlice.actions;

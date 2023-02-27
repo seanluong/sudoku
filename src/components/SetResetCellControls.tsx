@@ -2,7 +2,8 @@ import { Button, Stack, TextField } from "@mui/material"
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setCell } from "../reducers/CellsReducer";
-import { ControlsState, resetCell } from "../reducers/ControlsReducer";
+import { unselectCell } from "../reducers/ControlsReducer";
+import { ControlsState } from "../reducers/ControlsReducer";
 import { SudokuAppState } from "../reducers/reducer";
 
 export const SetResetCellControls = () => {
@@ -20,8 +21,19 @@ export const SetResetCellControls = () => {
         }
     }, [status]);
 
-    const handleResetCellClicked = (event: React.MouseEvent) => {
-        dispatch(resetCell({}))
+    const resetControls = () => {
+        setLocalValue((currentValue) => {
+            if (textFieldRef.current) {
+                textFieldRef.current.value = '';
+                return '';
+            }
+            return currentValue;
+        });
+        dispatch(unselectCell());
+    }
+
+    const handleUnselectCellClicked = (event: React.MouseEvent) => {
+        resetControls();
     }
     const handleSetClicked = (event: React.MouseEvent) => {
         if (rowIndex === undefined || columnIndex === undefined) {
@@ -34,7 +46,7 @@ export const SetResetCellControls = () => {
                 columnIndex,
                 value: number,
             }));
-            dispatch(resetCell({}));
+            resetControls();
         }
     }
     const handleTextFieldChanged = (event: React.ChangeEvent) => {
@@ -72,8 +84,8 @@ export const SetResetCellControls = () => {
             <Button variant="contained"
                 color="secondary"
                 disabled={status === "UNSELECTED"}
-                onClick={handleResetCellClicked}>
-                Reset Cell
+                onClick={handleUnselectCellClicked}>
+                Unselect
             </Button>
         </Stack>
     );
