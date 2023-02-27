@@ -5,7 +5,7 @@ interface CellValue {
     row: number;
     col: number;
     value: number;
-  }
+}
 
 export interface Puzzle {
     shown: CellValue[];

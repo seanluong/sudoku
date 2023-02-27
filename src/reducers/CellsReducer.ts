@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { CellMap, CellValue } from "../components/Sudoku";
 import { Puzzle } from "../utils/puzzleFetcher";
+import { cellMapKey, validateBoard } from "../utils/puzzleValidation";
 
 
 type GameStatus = "SOLVED" | "WIP";
@@ -23,7 +24,6 @@ interface NewGamePayload {
     puzzle: Puzzle;
 }
 
-// TODO: remove the hard-coded puzzles
 const INITIAL_PUZZLE = [
     [6, 2, 1, 0, 5, 9, 0, 0, 0],
     [4, 0, 0, 0, 0, 6, 3, 5, 0],
@@ -35,10 +35,6 @@ const INITIAL_PUZZLE = [
     [0, 0, 3, 0, 6, 8, 0, 0, 0],
     [0, 6, 4, 2, 0, 3, 5, 0, 0],
 ]
-
-const cellMapKey = (rowIndex: number, columnIndex: number): string => {
-    return `${rowIndex}:${columnIndex}`;
-}
 
 const puzzleToCellMap = (puzzle: number[][]): CellMap => {
     const cellMap = {} as CellMap;
@@ -54,69 +50,6 @@ const puzzleToCellMap = (puzzle: number[][]): CellMap => {
         })
     });
     return cellMap;
-}
-
-const fromOneToNine = (numbers: number[]) => {
-    const set = new Set();
-    numbers.forEach((number) => {
-        set.add(number);
-    })
-    return set.size === 9;
-}
-
-const validateRow = (cells: CellMap, rowIndex: number): boolean => {
-    const indices = [0, 1, 2, 3, 4, 5, 6, 7, 8];
-    return fromOneToNine(indices.map((columnIndex) => {
-        const cell = cells[cellMapKey(rowIndex, columnIndex)];
-        return cell.value;
-    }));
-}
-
-const validateColumn = (cells: CellMap, colummIndex: number): boolean => {
-    const indices = [0, 1, 2, 3, 4, 5, 6, 7, 8];
-    return fromOneToNine(indices.map((rowIndex) => {
-        const cell = cells[cellMapKey(rowIndex, colummIndex)];
-        return cell.value;
-    }));
-}
-
-const validateSubSquare = (cells: CellMap, subSquareIndex: number): boolean => {
-    const numbers = [];
-    const rowIndex = Math.floor(subSquareIndex / 3) * 3;
-    const colIndex = (subSquareIndex % 3) * 3;
-    for (let r=0;r<3;r++) {
-        for (let c=0;c<3;c++) {
-            const cell = cells[cellMapKey(rowIndex + r, colIndex + c)];
-            numbers.push(cell.value);
-        }
-    }
-    return fromOneToNine(numbers);
-}
-
-// TODO: move validation logic to its own module, add tests, and return more meaningful error object
-const validateBoard = (cells: CellMap): boolean => {
-    const indices = [0, 1, 2, 3, 4, 5, 6, 7, 8];
-
-    const validRows = indices.every((index) => validateRow(cells, index));
-    if (!validRows) {
-        console.log("invalid row");
-        return false;
-    }
-
-    const validColumns = indices.every((index) => validateColumn(cells, index));
-    if (!validColumns) {
-        console.log("invalid column");
-        return false;
-    }
-
-    const validSubSquare = indices.every((index) => validateSubSquare(cells, index));
-    if (!validSubSquare) {
-        console.log("invalid sub square");
-        return false;
-    }
-
-    console.log("valid board");
-    return true;
 }
   
 export const cellsSlice = createSlice({
@@ -161,7 +94,9 @@ export const cellsSlice = createSlice({
             state.validationStatus = "N/A";
         },
         validate: (state) => {
-            const valid = validateBoard(state.cells);
+            // TODO: extend app state for validation errors
+            const validationErrors = validateBoard(state.cells);
+            const valid = validationErrors.length === 0;
             state.gameStatus = valid ? 'SOLVED' : 'WIP';
             state.validationStatus = valid ? 'VALID' : 'INVALID';
         },
