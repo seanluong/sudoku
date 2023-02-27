@@ -5,6 +5,7 @@ const { htmlToPuzzle } = require("./html-to-puzzle");
 interface PuzzleCache {
   puzzles: Puzzle[];
   today: string;
+  currentPuzzle: number;
 }
 
 const puzzleCache = {} as PuzzleCache;
@@ -15,9 +16,9 @@ const rateLimitReached = (cache: PuzzleCache) => {
   return (cache.today === today && cache.puzzles.length === maxPuzzleCount);
 }
 
-const randomPuzzleInCache = ({ puzzles }: PuzzleCache) => {
-  const index = Math.floor(Math.random() * puzzles.length);
-  return puzzles[index];
+const nextPuzzleInCache = (cache: PuzzleCache) => {
+  cache.currentPuzzle = (cache.currentPuzzle + 1) % cache.puzzles.length;
+  return cache.puzzles[cache.currentPuzzle];
 }
 
 const resetCacheIfNeeded = (cache: PuzzleCache) => {
@@ -25,6 +26,7 @@ const resetCacheIfNeeded = (cache: PuzzleCache) => {
   if (today !== cache.today) {
     cache.today = today;
     cache.puzzles = [];
+    cache.currentPuzzle = -1;
   }
 }
 
@@ -33,7 +35,7 @@ exports.handler = async (event, context) => {
 
   resetCacheIfNeeded(puzzleCache);
   if (rateLimitReached(puzzleCache)) {
-    puzzle = randomPuzzleInCache(puzzleCache);
+    puzzle = nextPuzzleInCache(puzzleCache);
     return {
       statusCode: 200,
       body: JSON.stringify({
@@ -52,6 +54,7 @@ exports.handler = async (event, context) => {
     const html = await rp(rpOptions);
     puzzle = htmlToPuzzle(html);
     puzzleCache.puzzles.push(puzzle);
+    puzzleCache.currentPuzzle++;
   } catch (err) {
     return {
       statusCode: err.statusCode || 500,
