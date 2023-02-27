@@ -1,19 +1,24 @@
 import { Button, Stack, TextField } from "@mui/material"
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setCell } from "../reducers/CellsReducer";
 import { ControlsState, resetCell } from "../reducers/ControlsReducer";
 import { SudokuAppState } from "../reducers/reducer";
-
 
 export const SetResetCellControls = () => {
     const dispatch = useDispatch();
     const { status, input } = useSelector<SudokuAppState, ControlsState>(state => state.controls);
     const { rowIndex, columnIndex, value } = input;
 
-    const [localValue, setLocalValue] = useState(value || 0);
+    const [localValue, setLocalValue] = useState<string>(value ? `${value}` : '');
 
-    const label = (rowIndex !== undefined && columnIndex !== undefined) ? `Row ${rowIndex + 1} - Column ${columnIndex + 1}` : '';
+    const textFieldRef = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+        if (status === 'SELECTED' && textFieldRef.current) {
+            textFieldRef.current.focus();
+        }
+    }, [status]);
 
     const handleResetCellClicked = (event: React.MouseEvent) => {
         dispatch(resetCell({}))
@@ -22,7 +27,7 @@ export const SetResetCellControls = () => {
         if (rowIndex === undefined || columnIndex === undefined) {
             return;
         }
-        const number = localValue;
+        const number = Number.parseInt(localValue);
         if (Number.isInteger(number) && number > 0 && number < 10) {
             dispatch(setCell({
                 rowIndex,
@@ -33,13 +38,18 @@ export const SetResetCellControls = () => {
         }
     }
     const handleTextFieldChanged = (event: React.ChangeEvent) => {
-        const value = (event.target as HTMLInputElement).value;
-        const number = Number.parseInt(value || '');
-        if (Number.isNaN(number)) {
-            setLocalValue(0);
-        } else {
-            setLocalValue(number);
-        }
+        const value = (event.target as HTMLInputElement).value.trim();
+        setLocalValue((currentValue) => {
+            if (value === '') {
+                return value;
+            }
+            const number = Number.parseInt(value);
+            if (Number.isInteger(number) && number > 0 && number < 10) {
+                return `${number}`;
+            }
+            (event.target as HTMLInputElement).value = currentValue; 
+            return currentValue;
+        });
     }
 
     return (
@@ -51,7 +61,7 @@ export const SetResetCellControls = () => {
             }}>
             <TextField variant="outlined"
                 defaultValue={localValue}
-                label={label}
+                inputRef={textFieldRef}
                 disabled={status === "UNSELECTED"}
                 onChange={handleTextFieldChanged}/>
             <Button variant="contained"
