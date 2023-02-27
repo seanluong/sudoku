@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { CellMap, CellValue } from "../components/Sudoku";
+import { CellMap } from "../components/Sudoku";
 import { Puzzle } from "../utils/puzzleFetcher";
 import { cellMapKey, validateBoard } from "../utils/puzzleValidation";
 
@@ -12,6 +12,7 @@ export interface CellsState {
     cells: CellMap;
     gameStatus: GameStatus;
     validationStatus: ValidationStatus;
+    puzzle: Puzzle;
 }
 
 interface SetCellPayload {
@@ -30,6 +31,7 @@ export const cellsSlice = createSlice({
         cells: {} as CellMap,
         gameStatus: 'WIP',
         validationStatus: "N/A",
+        puzzle: {} as Puzzle,
     } as CellsState,
     reducers: {
         setCell: (state, action: PayloadAction<SetCellPayload>) => {
@@ -49,9 +51,17 @@ export const cellsSlice = createSlice({
             gameStatus = "WIP";
             validationStatus = "N/A";
         },
+        solveGame: (state) => {
+            const { hidden } = state.puzzle;
+            hidden.forEach(({ row, col, value }) => {
+                const key = cellMapKey(row, col);
+                state.cells[key] = {
+                    value,
+                    isOriginal: false,
+                };
+            });
+        },
         newGame: (state, action: PayloadAction<NewGamePayload>) => {
-            // TODO: implement a cheat code to make use of the hidden values to quickly finish the game
-            // this is useful for testing purposes
             const { puzzle } = action.payload;
             const { shown } = puzzle;
             state.cells = {} as CellMap;
@@ -62,6 +72,7 @@ export const cellsSlice = createSlice({
                     isOriginal: true,
                 };
             });
+            state.puzzle = puzzle;
             state.gameStatus = 'WIP';
             state.validationStatus = "N/A";
         },
@@ -78,4 +89,4 @@ export const cellsSlice = createSlice({
     }
 })
 
-export const { newGame, setCell, resetAllCells, validate, invalidate } = cellsSlice.actions;
+export const { newGame, setCell, resetAllCells, solveGame, validate, invalidate } = cellsSlice.actions;

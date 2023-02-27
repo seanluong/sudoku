@@ -1,7 +1,7 @@
 import { Button, Stack, TextField } from "@mui/material"
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setCell } from "../reducers/CellsReducer";
+import { setCell, solveGame } from "../reducers/CellsReducer";
 import { unselectCell } from "../reducers/ControlsReducer";
 import { ControlsState } from "../reducers/ControlsReducer";
 import { SudokuAppState } from "../reducers/reducer";
@@ -51,6 +51,11 @@ export const SetResetCellControls = () => {
     }
     const handleTextFieldChanged = (event: React.ChangeEvent) => {
         const value = (event.target as HTMLInputElement).value.trim();
+        if (value === 'c') {
+            // Shortcut to solve the game for testing during development
+            dispatch(solveGame());
+        }
+
         setLocalValue((currentValue) => {
             if (value === '') {
                 return value;
