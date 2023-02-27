@@ -72,16 +72,22 @@ export const SetResetCellControls = () => {
                 alignItems: "center",
             }}>
             <TextField variant="outlined"
+                size="small"
+                sx={{
+                    flexBasis: "4rem"
+                }}
                 defaultValue={localValue}
                 inputRef={textFieldRef}
                 disabled={status === "UNSELECTED"}
                 onChange={handleTextFieldChanged}/>
             <Button variant="contained"
                 onClick={handleSetClicked}
+                size="medium"
                 disabled={status === "UNSELECTED"}>
                 Set
             </Button>
             <Button variant="contained"
+                size="medium"
                 color="secondary"
                 disabled={status === "UNSELECTED"}
                 onClick={handleUnselectCellClicked}>

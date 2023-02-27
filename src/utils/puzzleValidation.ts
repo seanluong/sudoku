@@ -63,13 +63,13 @@ export const validateBoard = (cells: CellMap): ValidationError[] => {
         } as ValidationError));
 
     const columnErrors = indices
-        .filter((index) => !validateRow(cells, index))
+        .filter((index) => !validateColumn(cells, index))
         .map((index) => ({
             type: "COLUMN", index
         } as ValidationError));
 
     const subSquareErrors = indices
-        .filter((index) => !validateRow(cells, index))
+        .filter((index) => !validateSubSquare(cells, index))
         .map((index) => ({
             type: "SUB_SQUARE", index
         } as ValidationError));
