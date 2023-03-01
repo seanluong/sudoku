@@ -49,14 +49,15 @@ export const cellsSlice = createSlice({
                 isOriginal: false,
             }
         },
-        resetAllCells: ({ cells, gameStatus, validationStatus }) => {
-            Object.entries(cells).map(([key, value]) => {
+        resetAllCells: (state) => {
+            Object.entries(state.cells).map(([key, value]) => {
                 if (!value.isOriginal) {
-                    delete cells[key];
+                    delete state.cells[key];
                 }
             })
-            gameStatus = "WIP";
-            validationStatus = "N/A";
+            state.gameStatus = "WIP";
+            state.validationStatus = "N/A";
+            state.validationErrors = [];
         },
         solveGame: (state) => {
             const { hidden } = state.puzzle;
@@ -66,6 +67,7 @@ export const cellsSlice = createSlice({
                     value,
                     isOriginal: false,
                 };
+                state.validationErrors = [];
             });
         },
         newGame: (state, action: PayloadAction<NewGamePayload>) => {

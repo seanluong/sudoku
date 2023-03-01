@@ -16,6 +16,21 @@ const subSquareIndex = (rowIndex: number, columnIndex: number): number => {
     return rootRowIndex * 3 + rootColumnIndex;
 }
 
+export const invalidCell = (rowIndex: number, columnIndex: number, errors: ValidationError[]): boolean => {
+    return errors.some(({ type, index }) => {
+        if (type === "ROW") {
+            return index === rowIndex;
+        }
+        if (type === "COLUMN") {
+            return index === columnIndex;
+        }
+        if (type === "SUB_SQUARE") {
+            return index === subSquareIndex(rowIndex, columnIndex);
+        }
+        return false;
+    });
+}
+
 const unique = (numbers: number[]) => {
     const set = new Set();
     for (let number of numbers) {
@@ -81,6 +96,5 @@ export const validateBoardForCell = (cells: CellMap, rowIndex: number, colummInd
         } as ValidationError);
     }
 
-    console.log(errors);
     return errors;
 }

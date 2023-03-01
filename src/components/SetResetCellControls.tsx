@@ -95,6 +95,8 @@ export const SetResetCellControls = () => {
                 disabled={status === "UNSELECTED"}>
                 Set
             </Button>
+            {/* TODO: add reset cell button */}
+            {/* TODO: remove unselect and do unselect when the cell is click again or something */}
             <Button variant="contained"
                 size="medium"
                 color="secondary"
