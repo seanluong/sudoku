@@ -1,5 +1,6 @@
 import { Box, Paper, Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
+import { useShowErrorsContext } from "../context/ShowErrorsContext";
 import { CellsState } from "../reducers/CellsReducer";
 import { ControlsState, selectCell } from "../reducers/ControlsReducer";
 import { SudokuAppState } from "../reducers/reducer";
@@ -18,6 +19,7 @@ export const Cell = ({ rowIndex, columnIndex, cell, size, borderColor }: CellPro
     const dispatch = useDispatch();
     const { status, input } = useSelector<SudokuAppState, ControlsState>(state => state.controls);
     const { validationErrors } = useSelector<SudokuAppState, CellsState>(state => state.cells);
+    const { showErrors } = useShowErrorsContext();
 
     const invalid = invalidCell(rowIndex, columnIndex, validationErrors);
 
@@ -39,8 +41,8 @@ export const Cell = ({ rowIndex, columnIndex, cell, size, borderColor }: CellPro
         }
         return "white";
     }
-    const cellBackgroundImage = (cell: CellValue | undefined, invalid: boolean, cellSelected: boolean) => {
-        if (!invalid) {
+    const cellBackgroundImage = (cell: CellValue | undefined, showErrors: boolean, invalid: boolean, cellSelected: boolean) => {
+        if (!invalid || !showErrors) {
             return "none";
         }
         if (cellSelected) {
@@ -87,7 +89,7 @@ export const Cell = ({ rowIndex, columnIndex, cell, size, borderColor }: CellPro
                 borderBottom: cellBorderBottom(rowIndex, borderColor),
                 borderLeft: cellBorderLeft(columnIndex, borderColor),
                 borderRight: cellBorderRight(columnIndex, borderColor),
-                backgroundImage: cellBackgroundImage(cell, invalid, cellSelected),
+                backgroundImage: cellBackgroundImage(cell, showErrors, invalid, cellSelected),
             }}>
                 <Typography variant="h6">
                     {cell?.value ? cell?.value : null}

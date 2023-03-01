@@ -1,5 +1,6 @@
-import { Button, Stack, Typography } from "@mui/material"
+import { Button, FormControlLabel, Stack, Switch, Typography } from "@mui/material"
 import { useDispatch, useSelector } from "react-redux";
+import { useShowErrorsContext } from "../context/ShowErrorsContext";
 import { CellsState, newGame, resetAllCells, validateAll } from "../reducers/CellsReducer";
 import { SudokuAppState } from "../reducers/reducer";
 import { fetchPuzzle, Puzzle } from "../utils/puzzleFetcher";
@@ -7,6 +8,7 @@ import { fetchPuzzle, Puzzle } from "../utils/puzzleFetcher";
 export const GameControls = () => {
     const dispatch = useDispatch();
     const { cells, gameStatus } = useSelector<SudokuAppState, CellsState>(state => state.cells);
+    const { showErrors, toggleShowErrors } = useShowErrorsContext();
 
     const handleResetAllClicked = (event: React.MouseEvent) => {
         dispatch(resetAllCells())
@@ -61,6 +63,16 @@ export const GameControls = () => {
                                     onClick={handleResetAllClicked}>
                                 Reset All
                             </Button>
+                            <FormControlLabel
+                                label={
+                                    <Typography variant="h6">
+                                        Show Errors
+                                    </Typography>
+                                }
+                                control={
+                                    <Switch checked={showErrors} onChange={toggleShowErrors} name="showErrors" />
+                                }
+                            />
                         </>
                     )
                 }
