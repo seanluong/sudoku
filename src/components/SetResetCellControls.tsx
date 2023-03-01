@@ -83,6 +83,7 @@ export const SetResetCellControls = () => {
         });
     }
 
+    const buttonFontSize = { xs: "0.5rem", sm: "0.8rem", md: "1rem" };
     return (
         <Stack direction={"row"} 
             spacing={2}
@@ -104,20 +105,28 @@ export const SetResetCellControls = () => {
                     onClick={handleSetClicked}
                     size="medium"
                     color="primary"
-                    disabled={status === "UNSELECTED"}>
+                    disabled={status === "UNSELECTED"}
+                    sx={{
+                        fontSize: buttonFontSize
+                    }}>
                     Set
                 </Button>
                 <Button variant="contained"
                     onClick={handleResetClicked}
                     size="medium"
-                    
-                    disabled={status === "UNSELECTED"}>
+                    disabled={status === "UNSELECTED"}
+                    sx={{
+                        fontSize: buttonFontSize
+                    }}>
                     Reset
                 </Button>
                 <Button variant="contained"
                     size="medium"
                     disabled={status === "UNSELECTED"}
-                    onClick={handleUnselectCellClicked}>
+                    onClick={handleUnselectCellClicked}
+                    sx={{
+                        fontSize: buttonFontSize
+                    }}>
                     Unselect
                 </Button>
             </ButtonGroup>

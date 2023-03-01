@@ -12,7 +12,6 @@ export interface CellsState {
     cells: CellMap;
     gameStatus: GameStatus;
     validationStatus: ValidationStatus;
-    // TODO: allow players to switch from showing to not showing errors
     validationErrors: ValidationError[];
     puzzle: Puzzle;
 }

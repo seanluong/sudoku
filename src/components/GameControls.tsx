@@ -29,6 +29,7 @@ export const GameControls = () => {
     const isBoardFull = Object.keys(cells).length === 81;
     const canResetBoard = Object.values(cells).some((cellValue) => cellValue.isOriginal === false);
     const gameSolved = gameStatus === 'SOLVED';
+    const buttonFontSize = { xs: "0.5rem", sm: "0.8rem", md: "1rem" };
     return (
         <Stack direction={"row"} 
             spacing={2}
@@ -60,23 +61,32 @@ export const GameControls = () => {
                             <ButtonGroup variant="contained" color="secondary" aria-label="contained secondary button group">
                                 <Button size="medium"
                                         onClick={handleValidateClicked}
-                                        disabled={!isBoardFull}>
+                                        disabled={!isBoardFull}
+                                        sx={{
+                                            fontSize: buttonFontSize,
+                                        }}>
                                     Validate
                                 </Button>
                                 <Button size="medium"
                                         disabled={!canResetBoard}
-                                        onClick={handleResetAllClicked}>
+                                        onClick={handleResetAllClicked}
+                                        sx={{
+                                            fontSize: buttonFontSize,
+                                        }}>
                                     Reset All
                                 </Button>
                             </ButtonGroup>
                             <FormControlLabel
                                 label={
-                                    <Typography variant="h6">
+                                    <Typography variant="button"
+                                                sx={{
+                                                    fontSize: buttonFontSize
+                                                }}>
                                         Show Errors
                                     </Typography>
                                 }
                                 control={
-                                    <Switch checked={showErrors} onChange={toggleShowErrors} name="showErrors" />
+                                    <Switch checked={showErrors} size="medium" onChange={toggleShowErrors} name="showErrors" />
                                 }
                             />
                         </>
