@@ -1,7 +1,7 @@
 import { Button, Stack, TextField } from "@mui/material"
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setCell, solveGame } from "../reducers/CellsReducer";
+import { setCell, solveGame, validate } from "../reducers/CellsReducer";
 import { unselectCell } from "../reducers/ControlsReducer";
 import { ControlsState } from "../reducers/ControlsReducer";
 import { SudokuAppState } from "../reducers/reducer";
@@ -46,6 +46,10 @@ export const SetResetCellControls = () => {
                 columnIndex,
                 value: number,
             }));
+            dispatch(validate({
+                rowIndex,
+                columnIndex,
+            }))
             resetControls();
         }
     }

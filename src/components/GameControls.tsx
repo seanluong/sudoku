@@ -1,6 +1,6 @@
 import { Button, Stack, Typography } from "@mui/material"
 import { useDispatch, useSelector } from "react-redux";
-import { CellsState, newGame, resetAllCells, validate } from "../reducers/CellsReducer";
+import { CellsState, newGame, resetAllCells, validateAll } from "../reducers/CellsReducer";
 import { SudokuAppState } from "../reducers/reducer";
 import { fetchPuzzle, Puzzle } from "../utils/puzzleFetcher";
 
@@ -12,7 +12,7 @@ export const GameControls = () => {
         dispatch(resetAllCells())
     }
     const handleValidateClicked = (event: React.MouseEvent) => {
-        dispatch(validate());
+        dispatch(validateAll());
     }
     const handleNewGameClicked = (event: React.MouseEvent) => {
         // TODO display UI based on the status of loading a new puzzle

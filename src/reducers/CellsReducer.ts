@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { CellMap } from "../components/Sudoku";
 import { Puzzle } from "../utils/puzzleFetcher";
-import { cellMapKey, validateBoard } from "../utils/puzzleValidation";
+import { cellMapKey, validateBoardForCell, ValidationError } from "../utils/puzzleValidation";
 
 
 type GameStatus = "SOLVED" | "WIP";
@@ -12,6 +12,7 @@ export interface CellsState {
     cells: CellMap;
     gameStatus: GameStatus;
     validationStatus: ValidationStatus;
+    validationErrors: ValidationError[];
     puzzle: Puzzle;
 }
 
@@ -24,6 +25,11 @@ interface SetCellPayload {
 interface NewGamePayload {
     puzzle: Puzzle;
 }
+
+interface ValidatePayload {
+    rowIndex: number;
+    columnIndex: number;
+}
   
 export const cellsSlice = createSlice({
     name: 'cells',
@@ -31,6 +37,7 @@ export const cellsSlice = createSlice({
         cells: {} as CellMap,
         gameStatus: 'WIP',
         validationStatus: "N/A",
+        validationErrors: [] as ValidationError[],
         puzzle: {} as Puzzle,
     } as CellsState,
     reducers: {
@@ -76,12 +83,14 @@ export const cellsSlice = createSlice({
             state.gameStatus = 'WIP';
             state.validationStatus = "N/A";
         },
-        validate: (state) => {
-            // TODO: extend app state for validation errors
-            const validationErrors = validateBoard(state.cells);
-            const valid = validationErrors.length === 0;
+        validateAll: (state) => {
+            const valid = state.validationErrors.length === 0;
             state.gameStatus = valid ? 'SOLVED' : 'WIP';
             state.validationStatus = valid ? 'VALID' : 'INVALID';
+        },
+        validate: (state, action: PayloadAction<ValidatePayload>) => {
+            const { rowIndex, columnIndex } = action.payload;
+            state.validationErrors = validateBoardForCell(state.cells, rowIndex, columnIndex);
         },
         invalidate: (state) => {
             state.validationStatus = 'N/A';
@@ -89,4 +98,4 @@ export const cellsSlice = createSlice({
     }
 })
 
-export const { newGame, setCell, resetAllCells, solveGame, validate, invalidate } = cellsSlice.actions;
+export const { newGame, setCell, resetAllCells, solveGame, validate, validateAll, invalidate } = cellsSlice.actions;

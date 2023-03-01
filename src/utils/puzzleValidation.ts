@@ -1,42 +1,46 @@
 import { CellMap } from "../components/Sudoku";
 
 
-interface ValidationError {
+export interface ValidationError {
     type: "ROW" | "COLUMN" | "SUB_SQUARE";
     index: number;
-}
-
-export interface ValidationResult {
-    valid: boolean;
-    errors?: ValidationError[];
 }
 
 export const cellMapKey = (rowIndex: number, columnIndex: number): string => {
     return `${rowIndex}:${columnIndex}`;
 }
 
-const fromOneToNine = (numbers: number[]) => {
+const subSquareIndex = (rowIndex: number, columnIndex: number): number => {
+    const rootRowIndex = Math.floor(rowIndex / 3);
+    const rootColumnIndex = Math.floor(columnIndex / 3);
+    return rootRowIndex * 3 + rootColumnIndex;
+}
+
+const unique = (numbers: number[]) => {
     const set = new Set();
-    numbers.forEach((number) => {
+    for (let number of numbers) {
+        if (set.has(number)) {
+            return false;
+        }
         set.add(number);
-    })
-    return set.size === 9;
+    }
+    return true;
 }
 
 const validateRow = (cells: CellMap, rowIndex: number): boolean => {
     const indices = [0, 1, 2, 3, 4, 5, 6, 7, 8];
-    return fromOneToNine(indices.map((columnIndex) => {
+    return unique(indices.map((columnIndex) => {
         const cell = cells[cellMapKey(rowIndex, columnIndex)];
-        return cell.value;
-    }));
+        return cell?.value;
+    }).filter((value) => value));
 }
 
 const validateColumn = (cells: CellMap, colummIndex: number): boolean => {
     const indices = [0, 1, 2, 3, 4, 5, 6, 7, 8];
-    return fromOneToNine(indices.map((rowIndex) => {
+    return unique(indices.map((rowIndex) => {
         const cell = cells[cellMapKey(rowIndex, colummIndex)];
-        return cell.value;
-    }));
+        return cell?.value;
+    }).filter((value) => value));
 }
 
 const validateSubSquare = (cells: CellMap, subSquareIndex: number): boolean => {
@@ -46,36 +50,37 @@ const validateSubSquare = (cells: CellMap, subSquareIndex: number): boolean => {
     for (let r=0;r<3;r++) {
         for (let c=0;c<3;c++) {
             const cell = cells[cellMapKey(rowIndex + r, colIndex + c)];
-            numbers.push(cell.value);
+            if (cell && cell.value) {
+                numbers.push(cell.value);
+            }
         }
     }
-    return fromOneToNine(numbers);
+    return unique(numbers);
 }
 
 // TODO: add tests
-export const validateBoard = (cells: CellMap): ValidationError[] => {
-    const indices = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+export const validateBoardForCell = (cells: CellMap, rowIndex: number, colummIndex: number): ValidationError[] => {
+    const errors = [] as ValidationError[];
 
-    const rowErrors = indices
-        .filter((index) => !validateRow(cells, index))
-        .map((index) => ({
-            type: "ROW", index
-        } as ValidationError));
+    if (!validateRow(cells, rowIndex)) {
+        errors.push({
+            type: "ROW", index: rowIndex
+        } as ValidationError);
+    }
 
-    const columnErrors = indices
-        .filter((index) => !validateColumn(cells, index))
-        .map((index) => ({
-            type: "COLUMN", index
-        } as ValidationError));
+    if (!validateColumn(cells, colummIndex)) {
+        errors.push({
+            type: "COLUMN", index: colummIndex
+        } as ValidationError);
+    }
 
-    const subSquareErrors = indices
-        .filter((index) => !validateSubSquare(cells, index))
-        .map((index) => ({
+    const index = subSquareIndex(rowIndex, colummIndex);
+    if (!validateSubSquare(cells, index)) {
+        errors.push({
             type: "SUB_SQUARE", index
-        } as ValidationError));
+        } as ValidationError);
+    }
 
-
-    const errors = rowErrors.concat(columnErrors).concat(subSquareErrors);
     console.log(errors);
     return errors;
 }
