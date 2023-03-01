@@ -59,7 +59,7 @@ export const GameControls = () => {
                                     color="secondary"
                                     disabled={!canResetBoard}
                                     onClick={handleResetAllClicked}>
-                                Reset
+                                Reset All
                             </Button>
                         </>
                     )

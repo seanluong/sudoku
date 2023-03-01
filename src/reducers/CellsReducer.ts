@@ -12,6 +12,7 @@ export interface CellsState {
     cells: CellMap;
     gameStatus: GameStatus;
     validationStatus: ValidationStatus;
+    // TODO: allow players to switch from showing to not showing errors
     validationErrors: ValidationError[];
     puzzle: Puzzle;
 }
@@ -44,9 +45,13 @@ export const cellsSlice = createSlice({
         setCell: (state, action: PayloadAction<SetCellPayload>) => {
             const { rowIndex, columnIndex, value } = action.payload;
             const key = `${rowIndex}:${columnIndex}`;
-            state.cells[key] = {
-                value,
-                isOriginal: false,
+            if (value === 0) {
+                delete state.cells[key];
+            } else {
+                state.cells[key] = {
+                    value,
+                    isOriginal: false,
+                }
             }
         },
         resetAllCells: (state) => {

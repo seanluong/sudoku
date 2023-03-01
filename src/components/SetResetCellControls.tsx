@@ -1,6 +1,7 @@
 import { Button, Stack, TextField } from "@mui/material"
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Dispatch } from "redux";
 import { setCell, solveGame, validate } from "../reducers/CellsReducer";
 import { unselectCell } from "../reducers/ControlsReducer";
 import { ControlsState } from "../reducers/ControlsReducer";
@@ -31,6 +32,18 @@ export const SetResetCellControls = () => {
         });
         dispatch(unselectCell());
     }
+    const dispatchSetCell = (rowIndex: number, columnIndex: number, value: number) => {
+        dispatch(setCell({
+            rowIndex,
+            columnIndex,
+            value,
+        }));
+        dispatch(validate({
+            rowIndex,
+            columnIndex,
+        }))
+        resetControls();
+    }
 
     const handleUnselectCellClicked = (event: React.MouseEvent) => {
         resetControls();
@@ -41,17 +54,14 @@ export const SetResetCellControls = () => {
         }
         const number = Number.parseInt(localValue);
         if (Number.isInteger(number) && number > 0 && number < 10) {
-            dispatch(setCell({
-                rowIndex,
-                columnIndex,
-                value: number,
-            }));
-            dispatch(validate({
-                rowIndex,
-                columnIndex,
-            }))
-            resetControls();
+            dispatchSetCell(rowIndex, columnIndex, number)
         }
+    }
+    const handleResetClicked = (event: React.MouseEvent) => {
+        if (rowIndex === undefined || columnIndex === undefined) {
+            return;
+        }
+        dispatchSetCell(rowIndex, columnIndex, 0);
     }
     const handleTextFieldChanged = (event: React.ChangeEvent) => {
         const value = (event.target as HTMLInputElement).value.trim();
@@ -95,8 +105,13 @@ export const SetResetCellControls = () => {
                 disabled={status === "UNSELECTED"}>
                 Set
             </Button>
-            {/* TODO: add reset cell button */}
-            {/* TODO: remove unselect and do unselect when the cell is click again or something */}
+            <Button variant="contained"
+                onClick={handleResetClicked}
+                size="medium"
+                color="secondary"
+                disabled={status === "UNSELECTED"}>
+                Reset
+            </Button>
             <Button variant="contained"
                 size="medium"
                 color="secondary"
