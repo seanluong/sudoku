@@ -1,4 +1,4 @@
-import { Button, Stack, TextField } from "@mui/material"
+import { Button, ButtonGroup, Stack, TextField } from "@mui/material"
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
@@ -99,26 +99,28 @@ export const SetResetCellControls = () => {
                 inputRef={textFieldRef}
                 disabled={status === "UNSELECTED"}
                 onChange={handleTextFieldChanged}/>
-            <Button variant="contained"
-                onClick={handleSetClicked}
-                size="medium"
-                disabled={status === "UNSELECTED"}>
-                Set
-            </Button>
-            <Button variant="contained"
-                onClick={handleResetClicked}
-                size="medium"
-                color="secondary"
-                disabled={status === "UNSELECTED"}>
-                Reset
-            </Button>
-            <Button variant="contained"
-                size="medium"
-                color="secondary"
-                disabled={status === "UNSELECTED"}
-                onClick={handleUnselectCellClicked}>
-                Unselect
-            </Button>
+            <ButtonGroup variant="contained" color="secondary" aria-label="contained secondary button group">
+                <Button variant="contained"
+                    onClick={handleSetClicked}
+                    size="medium"
+                    color="primary"
+                    disabled={status === "UNSELECTED"}>
+                    Set
+                </Button>
+                <Button variant="contained"
+                    onClick={handleResetClicked}
+                    size="medium"
+                    
+                    disabled={status === "UNSELECTED"}>
+                    Reset
+                </Button>
+                <Button variant="contained"
+                    size="medium"
+                    disabled={status === "UNSELECTED"}
+                    onClick={handleUnselectCellClicked}>
+                    Unselect
+                </Button>
+            </ButtonGroup>
         </Stack>
     );
 }

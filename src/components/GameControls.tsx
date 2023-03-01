@@ -1,4 +1,5 @@
-import { Button, FormControlLabel, Stack, Switch, Typography } from "@mui/material"
+import { Button, ButtonGroup, Fab, FormControlLabel, Stack, Switch, Typography } from "@mui/material"
+import AddIcon from '@mui/icons-material/Add';
 import { useDispatch, useSelector } from "react-redux";
 import { useShowErrorsContext } from "../context/ShowErrorsContext";
 import { CellsState, newGame, resetAllCells, validateAll } from "../reducers/CellsReducer";
@@ -35,11 +36,17 @@ export const GameControls = () => {
                 justifyContent: "center",
                 alignItems: "center",
             }}>
-                <Button variant="contained"
-                        onClick={handleNewGameClicked}
-                        size="medium">
-                    New
-                </Button>
+                <Fab color="primary"
+                    aria-label="add"
+                    size="medium"
+                    onClick={handleNewGameClicked}
+                    sx={{
+                        position: "absolute",
+                        bottom: "2rem",
+                        right: "2rem",
+                    }}>
+                    <AddIcon />
+                </Fab>
                 {
                     gameSolved ? (
                         <>
@@ -50,19 +57,18 @@ export const GameControls = () => {
                     ) : 
                     (
                         <>
-                            <Button variant="contained"
-                                    size="medium"
-                                    onClick={handleValidateClicked}
-                                    disabled={!isBoardFull}>
-                                Validate
-                            </Button>
-                            <Button variant="contained"
-                                    size="medium"
-                                    color="secondary"
-                                    disabled={!canResetBoard}
-                                    onClick={handleResetAllClicked}>
-                                Reset All
-                            </Button>
+                            <ButtonGroup variant="contained" color="secondary" aria-label="contained secondary button group">
+                                <Button size="medium"
+                                        onClick={handleValidateClicked}
+                                        disabled={!isBoardFull}>
+                                    Validate
+                                </Button>
+                                <Button size="medium"
+                                        disabled={!canResetBoard}
+                                        onClick={handleResetAllClicked}>
+                                    Reset All
+                                </Button>
+                            </ButtonGroup>
                             <FormControlLabel
                                 label={
                                     <Typography variant="h6">
