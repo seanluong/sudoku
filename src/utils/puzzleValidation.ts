@@ -42,7 +42,7 @@ export const unique = (numbers: number[]) => {
     return true;
 }
 
-const validateRow = (cells: CellMap, rowIndex: number): boolean => {
+export const validateRow = (cells: CellMap, rowIndex: number): boolean => {
     const indices = [0, 1, 2, 3, 4, 5, 6, 7, 8];
     return unique(indices.map((columnIndex) => {
         const cell = cells[cellMapKey(rowIndex, columnIndex)];
