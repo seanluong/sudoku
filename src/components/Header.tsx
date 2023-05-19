@@ -4,18 +4,15 @@ import { AppBar, IconButton, Toolbar } from '@mui/material';
 export const Header = () => {
     const gitHubUrl = "https://github.com/seanluong/sudoku";
 
-    return (
-        <>
-            <AppBar position='static' sx={{
+return (
+        <AppBar position='static' data-testid='header'>
+            <Toolbar sx={{
+                justifyContent: "center",
             }}>
-                <Toolbar sx={{
-                    justifyContent: "center",
-                }}>
-                    <IconButton href={gitHubUrl} target={"_blank"} rel="noreferrer noopener">
-                        <GitHubIcon />
-                    </IconButton>
-                </Toolbar>
-            </AppBar>
-        </>
+                <IconButton href={gitHubUrl} target={"_blank"} rel="noreferrer noopener" data-testid='icon-button'>
+                    <GitHubIcon/>
+                </IconButton>
+            </Toolbar>
+        </AppBar>
     );
 }
