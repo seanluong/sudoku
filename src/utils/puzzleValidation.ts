@@ -31,7 +31,7 @@ export const invalidCell = (rowIndex: number, columnIndex: number, errors: Valid
     });
 }
 
-const unique = (numbers: number[]) => {
+export const unique = (numbers: number[]) => {
     const set = new Set();
     for (let number of numbers) {
         if (set.has(number)) {
