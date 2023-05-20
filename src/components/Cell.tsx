@@ -11,50 +11,48 @@ interface CellProps {
     rowIndex: number;
     columnIndex: number;
     cell?: CellValue;
-    size: string;
-    borderColor: string;
 }
 
-export const Cell = ({ rowIndex, columnIndex, cell, size, borderColor }: CellProps) => {
+export const Cell = ({ rowIndex, columnIndex, cell }: CellProps) => {
     const dispatch = useDispatch();
     const { status, input } = useSelector<SudokuAppState, ControlsState>(state => state.controls);
     const { validationErrors } = useSelector<SudokuAppState, CellsState>(state => state.cells);
     const { showErrors } = useShowErrorsContext();
 
     const invalid = invalidCell(rowIndex, columnIndex, validationErrors);
-
-    const cellBorderTop = (rowIndex: number, style: string) => ([3, 6].includes(rowIndex) ? style : "none");
-    const cellBorderBottom = (rowIndex: number, style: string) => ([2, 5].includes(rowIndex) ? style : "none");
-    const cellBorderLeft = (columnIndex: number, style: string) => ([3, 6].includes(columnIndex) ? style : "none");
-    const cellBorderRight = (columnIndex: number, style: string) => ([2, 5].includes(columnIndex) ? style : "none");
-
+    const cellBorderTop = [3, 6].includes(rowIndex);
+    const cellBorderBottom = [2, 5].includes(rowIndex);
+    const cellBorderLeft = [3, 6].includes(columnIndex);
+    const cellBorderRight = [2, 5].includes(columnIndex);
     const cellSelected = status === "SELECTED" && input.rowIndex === rowIndex && input.columnIndex === columnIndex;
     const cellBackgroundColor = (cell: CellValue | undefined, cellSelected: boolean) => {
         if (cell?.isOriginal) {
-            return "lightblue";
+            return "bg-[lightblue]";
         }
         if (cellSelected) {
-            return "yellow";
+            return "bg-[yellow]";
         }
         if (cell?.value) {
-            return "aquamarine";
+            return "bg-[aquamarine]";
         }
-        return "white";
+        return "bg-white";
     }
     const cellBackgroundImage = (cell: CellValue | undefined, showErrors: boolean, invalid: boolean, cellSelected: boolean) => {
         if (!invalid || !showErrors) {
             return "none";
         }
+        let color = 'white';
         if (cellSelected) {
-            return "radial-gradient(closest-side, yellow 75%, palevioletred)";
+            color = 'yellow';
         }
         if (cell?.isOriginal) {
-            return "radial-gradient(closest-side, lightblue 75%, palevioletred)";
+            color = 'lightblue';
         }
         if (cell?.value) {
-            return "radial-gradient(closest-side, aquamarine 75%, palevioletred)";
+            color = 'aquamarine';
         }
-        return "radial-gradient(closest-side, white 75%, palevioletred)";
+        let template = `bg-gradient-to-br from-rose-500 to-${color} to-50%`;
+        return template;
     }
 
     const handleClicked = (event: React.MouseEvent) => {
@@ -68,29 +66,26 @@ export const Cell = ({ rowIndex, columnIndex, cell, size, borderColor }: CellPro
         }))
     }
 
+    const innerClassNames = [
+        "flex",
+        "items-center",
+        "justify-center",
+        "h-full",
+        "border-[#000064]/80",
+        cellBorderTop ? "border-t-2" : "",
+        cellBorderBottom ? "border-b-2" : "",
+        cellBorderLeft ? "border-l-2" : "",
+        cellBorderRight ? "border-r-2" : "",
+        cellBackgroundColor(cell, cellSelected),
+        cellBackgroundImage(cell, showErrors, invalid, cellSelected),
+    ].filter((className) => className.length > 0);
     return (
         <Paper key={`cell-${rowIndex}-${columnIndex}`}
             onClick={handleClicked}
             elevation={0}
-            sx={{
-                flex: `1 1 ${size}`,
-                width: size,
-                padding: "1px",
-                bgcolor: "rgba(0, 0, 0, 0.2)",
-            }}>
-            <Box sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                width: "100%",
-                height: "100%",
-                backgroundColor: cellBackgroundColor(cell, cellSelected),
-                borderTop: cellBorderTop(rowIndex, borderColor),
-                borderBottom: cellBorderBottom(rowIndex, borderColor),
-                borderLeft: cellBorderLeft(columnIndex, borderColor),
-                borderRight: cellBorderRight(columnIndex, borderColor),
-                backgroundImage: cellBackgroundImage(cell, showErrors, invalid, cellSelected),
-            }}>
+            className={`p-px bg-black/20 w-[calc(min(75vw,75vh)/9)]`}
+        >
+            <Box className={innerClassNames.join(" ")}>
                 <Typography variant="h6">
                     {cell?.value ? cell?.value : null}
                 </Typography>

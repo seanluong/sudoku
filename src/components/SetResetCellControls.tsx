@@ -1,7 +1,6 @@
 import { Button, ButtonGroup, Stack, TextField } from "@mui/material"
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Dispatch } from "redux";
 import { setCell, solveGame, validate } from "../reducers/CellsReducer";
 import { unselectCell } from "../reducers/ControlsReducer";
 import { ControlsState } from "../reducers/ControlsReducer";
@@ -85,17 +84,14 @@ export const SetResetCellControls = () => {
 
     const buttonFontSize = { xs: "0.5rem", sm: "0.8rem", md: "1rem" };
     return (
-        <Stack direction={"row"} 
-            spacing={2}
-            sx={{
-                justifyContent: "center",
-                alignItems: "center",
-            }}>
+        <Stack
+            direction={"row"} 
+            gap={2}
+            className="justify-center items-center"
+        >
             <TextField variant="outlined"
                 size="small"
-                sx={{
-                    flexBasis: "4rem"
-                }}
+                className="basis-16"
                 defaultValue={localValue}
                 inputRef={textFieldRef}
                 disabled={status === "UNSELECTED"}

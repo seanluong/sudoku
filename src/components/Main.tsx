@@ -5,12 +5,11 @@ import { Sudoku } from './Sudoku';
 
 export const Main = () => {
     return (
-        <Stack component={"main"} sx={{
-            alignItems: "center",
-            justifyContent: "space-between",
-            width: "100vw",
-            paddingTop: "1rem",
-        }} spacing={3}>
+        <Stack
+            component={"main"}
+            className='items-center pt-3 w-screen'
+            gap={3}
+        >
             <GameControls />
             <Sudoku />
             <SetResetCellControls />

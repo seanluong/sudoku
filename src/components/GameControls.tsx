@@ -11,13 +11,9 @@ export const GameControls = () => {
     const { cells, gameStatus } = useSelector<SudokuAppState, CellsState>(state => state.cells);
     const { showErrors, toggleShowErrors } = useShowErrorsContext();
 
-    const handleResetAllClicked = (event: React.MouseEvent) => {
-        dispatch(resetAllCells())
-    }
-    const handleValidateClicked = (event: React.MouseEvent) => {
-        dispatch(validateAll());
-    }
-    const handleNewGameClicked = (event: React.MouseEvent) => {
+    const handleResetAllClicked = (_: React.MouseEvent) => dispatch(resetAllCells());
+    const handleValidateClicked = (_: React.MouseEvent) => dispatch(validateAll());
+    const handleNewGameClicked = (_: React.MouseEvent) => {
         // TODO display UI based on the status of loading a new puzzle
         fetchPuzzle().then((puzzle?: Puzzle) => {
             if (puzzle) {
@@ -31,67 +27,60 @@ export const GameControls = () => {
     const gameSolved = gameStatus === 'SOLVED';
     const buttonFontSize = { xs: "0.5rem", sm: "0.8rem", md: "1rem" };
     return (
-        <Stack direction={"row"} 
-            spacing={2}
-            sx={{
-                justifyContent: "center",
-                alignItems: "center",
-            }}>
-                <Fab color="primary"
-                    aria-label="add"
-                    size="medium"
-                    onClick={handleNewGameClicked}
-                    sx={{
-                        position: "absolute",
-                        bottom: "2rem",
-                        right: "2rem",
-                    }}>
-                    <AddIcon />
-                </Fab>
-                {
-                    gameSolved ? (
-                        <>
-                            <Typography variant="h5">
-                                Congratulations!
-                            </Typography>
-                        </>
-                    ) : 
-                    (
-                        <>
-                            <ButtonGroup variant="contained" color="secondary" aria-label="contained secondary button group">
-                                <Button size="medium"
-                                        onClick={handleValidateClicked}
-                                        disabled={!isBoardFull}
-                                        sx={{
-                                            fontSize: buttonFontSize,
-                                        }}>
-                                    Validate
-                                </Button>
-                                <Button size="medium"
-                                        disabled={!canResetBoard}
-                                        onClick={handleResetAllClicked}
-                                        sx={{
-                                            fontSize: buttonFontSize,
-                                        }}>
-                                    Reset All
-                                </Button>
-                            </ButtonGroup>
-                            <FormControlLabel
-                                label={
-                                    <Typography variant="button"
-                                                sx={{
-                                                    fontSize: buttonFontSize
-                                                }}>
-                                        Show Errors
-                                    </Typography>
-                                }
-                                control={
-                                    <Switch checked={showErrors} size="medium" onChange={toggleShowErrors} name="showErrors" />
-                                }
-                            />
-                        </>
-                    )
-                }
+        <Stack
+            direction={"row"} 
+            gap={2}
+            className="justify-center items-center"
+        >
+            <Fab color="primary"
+                aria-label="add"
+                size="medium"
+                onClick={handleNewGameClicked}
+                className="absolute bottom-8 right-8"
+            >
+                <AddIcon />
+            </Fab>
+            {
+                gameSolved ? (
+                    <Typography variant="h5">Congratulations!</Typography>
+                ) : 
+                (
+                    <>
+                        <ButtonGroup variant="contained" color="secondary" aria-label="contained secondary button group">
+                            <Button size="medium"
+                                    onClick={handleValidateClicked}
+                                    disabled={!isBoardFull}
+                                    sx={{
+                                        fontSize: buttonFontSize,
+                                    }}
+                                >
+                                Validate
+                            </Button>
+                            <Button size="medium"
+                                    disabled={!canResetBoard}
+                                    onClick={handleResetAllClicked}
+                                    sx={{
+                                        fontSize: buttonFontSize,
+                                    }}>
+                                Reset All
+                            </Button>
+                        </ButtonGroup>
+                        <FormControlLabel
+                            label={
+                                <Typography variant="button"
+                                            sx={{
+                                                fontSize: buttonFontSize
+                                            }}>
+                                    Show Errors
+                                </Typography>
+                            }
+                            control={
+                                <Switch checked={showErrors} size="medium" onChange={toggleShowErrors} name="showErrors" />
+                            }
+                        />
+                    </>
+                )
+            }
         </Stack>
     );
 }

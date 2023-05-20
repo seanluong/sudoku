@@ -6,9 +6,7 @@ export const Header = () => {
 
 return (
         <AppBar position='static' data-testid='header'>
-            <Toolbar sx={{
-                justifyContent: "center",
-            }}>
+            <Toolbar className='justify-center' data-testid='toolbar'>
                 <IconButton href={gitHubUrl} target={"_blank"} rel="noreferrer noopener" data-testid='icon-button'>
                     <GitHubIcon/>
                 </IconButton>

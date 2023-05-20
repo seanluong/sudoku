@@ -32,19 +32,11 @@ export const Sudoku = () => {
     const rows = [0, 1, 2, 3, 4, 5, 6, 7, 8];
     const columns = [0, 1, 2, 3, 4, 5, 6, 7, 8];
 
-    const gridSize = "min(75vw, 75vh)";
-    const outerBackgroundColor = "rgba(0, 0, 100, 0.8)";
-
-    const cellSize = `calc(${gridSize} / ${rows.length})`;
-    const cellBorderColor = `1px solid ${outerBackgroundColor}`;
-
     return (
-        <Paper sx={{
-            bgcolor: outerBackgroundColor,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-        }} elevation={4}>
+        <Paper
+            className="bg-[#000064]/80"
+            elevation={4}
+        >
             <Grid container direction="column" >
                 {
                     rows.map((row) => {
@@ -54,10 +46,7 @@ export const Sudoku = () => {
                                 key={`row-${row}`}
                                 justifyContent="center"
                                 direction="row"
-                                sx={{
-                                    flex: `1 1 ${cellSize}`,
-                                    height: cellSize,
-                                }}
+                                className={`h-[calc(min(75vw,75vh)/9)]`}
                             >
                                 {
                                     columns.map((column) => {
@@ -67,8 +56,7 @@ export const Sudoku = () => {
                                                 rowIndex={row}
                                                 columnIndex={column}
                                                 cell={cell}
-                                                size={cellSize}
-                                                borderColor={cellBorderColor} />
+                                            />
                                         );
                                     })
                                 }
